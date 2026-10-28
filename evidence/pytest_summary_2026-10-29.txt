@@ -1,0 +1,2 @@
+memomind pytest 全量（2026-10-29，SM-1 会话）
+89 passed, 1 warning in 2.59s
