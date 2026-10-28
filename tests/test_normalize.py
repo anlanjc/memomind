@@ -238,3 +238,55 @@ def test_end_to_end_applied_companion_matches_rule_extractor():
     rule = {(f.predicate, f.object) for f in RuleExtractor().extract("我投了字节跳动")}
     assert _triples(facts) == rule
     assert len(ex.last_raw_facts) == 1  # last_raw_facts 保存未归一输出
+
+
+# -- v4 增量修订（MM-3：第一轮 v4 复测的两条新变体，条目全部来自实测证据）------
+def test_deepseek_chinese_name_alias():
+    # v4 A05 实测：LLM 把 "deepseek" 翻译成官方中文名"深度求索"
+    f = normalize_fact(_fact("applied_to", "深度求索", category="application"))
+    assert (f.predicate, f.object) == ("applied_to", "DeepSeek")
+    facts = normalize_facts([_fact("applied_to", "深度求索", category="application")])
+    assert _triples(facts) == {("applied_to", "DeepSeek"),
+                               ("application_status", "DeepSeek:submitted")}
+
+
+def test_role_object_folds_embedded_dev_suffix():
+    # v4 U01 实测：LLM 抽 (prefers, 后端开发岗位)——岗位宾语折迭后判为 target_role
+    f = normalize_fact(_fact("prefers", "后端开发岗位", category="preference"))
+    assert (f.predicate, f.object) == ("target_role", "后端岗")
+
+
+def test_applied_to_compound_role_object_becomes_target_role():
+    # 同一折迭也修 applied_to + 复合岗位宾语（"投后端开发岗"不是投公司）
+    f = normalize_fact(_fact("applied_to", "后端开发岗", category="application"))
+    assert (f.predicate, f.object) == ("target_role", "后端岗")
+
+
+def test_prefers_non_role_object_untouched():
+    # 红线守卫：非岗位宾语的偏好不动（"更喜欢远程办公"不是目标岗位）
+    f = normalize_fact(_fact("prefers", "远程办公", category="preference"))
+    assert (f.predicate, f.object) == ("prefers", "远程办公")
+
+
+def test_role_object_engineer_suffix_preserved():
+    # "算法工程师"是合法岗位写法（无"岗"结尾），折迭不动它
+    f = normalize_fact(_fact("target_role", "算法工程师", category="preference"))
+    assert (f.predicate, f.object) == ("target_role", "算法工程师")
+
+
+def test_bare_dev_word_not_folded_to_empty():
+    # 宾语本身只有"开发/工程师"时不折成空串（is_role_like("开发") 仍成立）
+    f = normalize_fact(_fact("target_role", "开发", category="preference"))
+    assert (f.predicate, f.object) == ("target_role", "开发")
+
+
+def test_failed_application_variant_maps_to_ended():
+    # v4 探针实测：同一输入"滴滴挂了"5 次调用产出 4 种谓词变体，其中
+    # failed_application 词典未登记——失败类亚词兜底归一为 ended 状态改写
+    f = normalize_fact(_fact("failed_application", "滴滴出行", confidence=0.95))
+    assert (f.predicate, f.object) == ("application_status", "滴滴:ended")
+
+
+def test_reject_root_subword_status():
+    f = normalize_fact(_fact("rejected_by_application", "美团"))
+    assert (f.predicate, f.object) == ("application_status", "美团:ended")

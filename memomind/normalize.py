@@ -15,13 +15,15 @@ applied_to，公司名归一体系与规则版分叉（滴滴出行 vs 滴滴）
               仅当宾语是岗位才映射，公司宾语的"想投"不是目标岗位，保留原样）
 2.5 亚词兜底  词典未命中的谓词按语义词根前缀归一（LLM 会造词典没登记的
               同义变体，v3 复测实测）；不命中原样保留
-3. 宾语感知   applied_to + 岗位宾语 -> target_role（"改投后端岗"不是投公司）
+3. 宾语感知   applied_to/prefers + 岗位宾语 -> target_role（"改投后端岗"不是投
+              公司；prefers+岗位=目标岗位偏好，v4 U01 实测补）
 4. 极性修正   negative + 投递/状态谓词 -> withdrawn:{实体}（撤销留档语义；
               ops 层本就凭 polarity 走撤销路径，规范化后审计谓词不再错挂）
 5. 实体归一   公司域谓词过 COMPANY_ALIASES（与 RuleExtractor 共享同一张表，
               别名表作为两套抽取器的共享基础设施）
-6. 宾语规范   target_role 宾语去空白 + "岗位"后缀折迭为"岗"（LLM 会展开
-              缩写，如"后端岗"->"后端岗位"，v3 复测实测）
+6. 宾语规范   target_role 宾语 _fold_role：去空白 + 吸收"开发/工程师"嵌入缀 +
+              "岗位"后缀折迭为"岗"（LLM 会展开缩写："后端岗"->"后端岗位" v3
+              实测、"后端开发岗位" v4 实测）
 7. 伴随补全   positive applied_to:X 且批内无任何 X 的状态 -> 补
               application_status:X:submitted（规则版 _f_applied 的伴随对不变量）
 8. 类别归一   规范谓词 -> 规范 category
@@ -66,6 +68,7 @@ COMPANY_ALIASES: dict[str, str] = {
     "拼多多": "拼多多",
     "滴滴": "滴滴",
     "滴滴出行": "滴滴",  # LLM 倾向输出全称（W09 实测证据），规范名与规则版对齐
+    "深度求索": "DeepSeek",  # LLM 会把英文名翻译成官方中文名（v4 A05 实测证据）
     "网易": "网易",
     "华为": "华为",
     "米哈游": "米哈游",
@@ -101,6 +104,19 @@ def is_role_like(obj: str) -> bool:
     if not o:
         return False
     return o in ROLE_VOCAB or _norm_company(o) == ""
+
+
+def _fold_role(obj: str) -> str:
+    """岗位宾语折迭：去空白 + 吸收"开发/工程师"嵌入缀 + "岗位"后缀折迭为"岗"。
+
+    v3 实测："后端岗"被 LLM 展开为"后端岗位"；v4 实测再变体"后端开发岗位"
+    （多一个"开发"嵌入缀，让后缀折迭与 role 判定双双失效）。折迭后
+    is_role_like 才能识别复合写法；空结果（宾语本身只有"开发/工程师"）不折。
+    """
+    obj = re.sub(r"\s+", "", obj)
+    stripped = re.sub(r"(?:工程师|开发)(?=岗(?:位)?$)", "", obj)
+    obj = stripped or obj
+    return re.sub(r"岗位$", "岗", obj)
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +223,24 @@ def _subword_map(src: str, obj: str) -> Optional[str]:
             return target
     return None
 
+
+# 状态类亚词兜底（谓词亚词未命中后触发）：LLM 会把"挂了/被拒"造出词典外的
+# 失败类变体——v4 探针实测同一输入"滴滴挂了"5 次调用产出 4 种谓词
+# （failed_at / was_rejected_by / failed_interview_at / failed_application），
+# 其中 failed_application 词典未登记。按失败类词根归一为 ended 状态改写。
+_SUBWORD_STATUS: list[tuple[tuple[str, ...], str]] = [
+    (("fail",), "ended"),
+    (("reject",), "ended"),
+]
+
+
+def _subword_status(src: str) -> Optional[str]:
+    tokens = src.lower().split("_")
+    for required, status in _SUBWORD_STATUS:
+        if all(any(t.startswith(r) for t in tokens) for r in required):
+            return status
+    return None
+
 # 实体归一化作用的谓词（object 是公司名）
 _COMPANY_SCOPED = {"applied_to", "withdrawn", "works_at"}
 # negative 极性下应改写为撤销留档的谓词
@@ -231,9 +265,17 @@ def normalize_fact(fact: ExtractedFact) -> ExtractedFact:
         mapped = _subword_map(src, obj)
         if mapped:
             pred = mapped
+        else:
+            status = _subword_status(src)
+            if status:
+                pred = "application_status"
+                obj = f"{_norm_company(obj)}:{status}"
 
-    # 3) 宾语感知：投递谓词 + 岗位宾语 -> target_role（"改投后端岗"的"改"语义）
-    if pred == "applied_to" and is_role_like(obj):
+    # 3) 宾语感知：投递/偏好谓词 + 岗位宾语 -> target_role
+    #    （"改投后端岗"的"改"语义，M20 实测；prefers+岗位宾语=目标岗位偏好，
+    #    v4 U01 实测"我想投后端岗"被抽成 prefers——岗位宾语是唯一判据，
+    #    非岗位宾语的偏好（"更喜欢远程办公"）不动）
+    if pred in ("applied_to", "prefers") and is_role_like(_fold_role(obj)):
         pred = "target_role"
 
     # 4) 极性修正：撤销/否定走 withdrawn 留档（ops 凭 polarity 触发撤销路径，
@@ -248,10 +290,8 @@ def normalize_fact(fact: ExtractedFact) -> ExtractedFact:
         entity, sep, st = obj.partition(":")
         obj = f"{(_norm_company(entity) or entity)}{sep}{st}"
     elif pred == "target_role":
-        # 6) 岗位宾语规范：去空白 + "岗位"后缀折迭为"岗"（v3 实测 LLM 把
-        #    "后端岗"展开为"后端岗位"；统一规范后缀，同名岗位不落两条）
-        obj = re.sub(r"\s+", "", obj)
-        obj = re.sub(r"岗位$", "岗", obj)
+        # 6) 岗位宾语规范（见 _fold_role：v3"岗位→岗" + v4"开发/工程师"嵌入缀）
+        obj = _fold_role(obj)
 
     return ExtractedFact(
         subject=fact.subject,
