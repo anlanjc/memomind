@@ -44,6 +44,35 @@
   仍能触发撤销路径）、实体归一化分叉（滴滴→滴滴出行，图分裂风险）+ 2 处真实误抽
   （"改投后端岗"被抽成 applied_to 后端岗）
 - v1 混合架构结论复验成立且证据更强：规则版的 schema 兼容性是 LLM 抽取不可替代的地基
+- **→ 上述四类差异已全部修复，修复后复测见下节。**
+
+## 真模型抽取质量修复后复测（2026-10-29，谓词映射层落地）
+
+- 修复：新增 `memomind/normalize.py` 谓词映射层，作为 OpenAICompatibleExtractor
+  的确定性后处理——①谓词词典映射（has_skill→uses、has_name→name、
+  wants_to_apply_to/interested_in→target_role、wants_to_work_in→prefers_city、
+  received_offer_from→application_status:X:offer、was_rejected_by→…:ended 等，
+  条目全部来自 v1/v2 实测证据）+ 词典未命中时的亚词兜底；②否定极性修正
+  （negative+applied_to → withdrawn:{实体}，撤销留档谓词不再错挂）+ 隐含状态
+  伴随补全（positive applied_to:X 自动补 application_status:X:submitted，对齐
+  规则版伴随对不变量）；③实体归一（公司域谓词过共享 COMPANY_ALIASES，
+  滴滴出行→滴滴；target_role 宾语"岗位→岗"折迭）；另修复 v2 的真实误抽
+  （applied_to+岗位宾语→target_role，"改投"语义不再把岗位当公司）。
+  抽取 prompt 与模型未动——LLM 行为冻结，改进可归因于归一化层。
+- **结果：完全一致 0/20 → 19/20 = 95%**（LLM 原始输出未归一对照仍 0/20）；
+  三轮复测 17/20 → 19/20 → 19/20，第一轮残差是 LLM 运行间造同义谓词变体
+  （词典盲区，加亚词兜底闭合），定稿残差 1 条是 LLM 抽取召回波动
+  （W09 本轮空抽，前两轮同输入抽出且全匹配）——归映射层职责已尽，
+  空抽兜底属混合架构的规则底线，不在本层偷跑。
+- 花费：三轮共 60 次调用，15,240 in + 20,161 out tokens ≈ **¥0.30**（上限 ¥0.5，
+  usage 实记账本 `evals/.real_extract_ledger.json`，v2 的"账本只读不写"缺陷已修）。
+- 明细：`evals/eval_set100_real_compare_v3.md`（原始/归一双列 + 改写标签）+
+  `real_extract_compare_rows_v3.json`；传输层 curl(schannel) +
+  NO_PROXY=dashscope.aliyuncs.com 绕过本机半死系统代理。
+- 回归：mock 全量 **100/100** 不变（规则路径零改动），memomind 全量 **118 测试绿**
+  （89 基线 + normalize 层 29 项新测试 + 2 项 LLM 抽取器测试更新）。
+- 设计边界：映射失败不猜测——未登记谓词原样保留走 ops 的 per_object 兜底
+  （宁可并存不可误杀）；词典/词根表按实测证据维护（活词典），测试与词典同文件演进。
 
 ## 复现
 
@@ -51,7 +80,9 @@
 cd memomind
 ../.venv/Scripts/python.exe evals/build_eval_set100.py     # 重新生成 JSON
 ../.venv/Scripts/python.exe evals/run_eval_set100.py       # mock 全量（应 100/100）
-../.venv/Scripts/python.exe evals/real_extract_compare.py  # 真模型 20 条对比（需 key）
+../.venv/Scripts/python.exe evals/real_extract_compare.py  # 真模型 20 条对比（需 key；
+                                                           #   产物 eval_set100_real_compare_v3.md，
+                                                           #   v2 版本见 git 历史）
 ```
 
 ## 已知边界
