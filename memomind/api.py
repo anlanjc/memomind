@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 from .chat import MemoChat, OpenAIResponder
 from .decay import DecayConfig, compact, run_decay
-from .extract import OpenAICompatibleExtractor, RuleExtractor
+from .extract import HybridExtractor, OpenAICompatibleExtractor, RuleExtractor
 from .llm import LLMConfig, MockResponder
 from .ops import LLMOpsDecider, RuleOpsDecider
 from .retrieve import RetrievalConfig, Retriever
@@ -77,7 +77,7 @@ def _build_responder():
             return MockResponder(), RuleExtractor(), RuleOpsDecider()
         return (
             OpenAIResponder(client),
-            OpenAICompatibleExtractor(client=client),
+            HybridExtractor(OpenAICompatibleExtractor(client=client)),
             LLMOpsDecider(client),
         )
     except Exception:

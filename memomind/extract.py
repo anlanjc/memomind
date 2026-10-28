@@ -10,6 +10,8 @@
   谓词映射层归一成规范谓词（LLM 抽取"语义对、命名歪"的系统化修复，见该
   模块 docstring 与 evals/eval_set100_report.md）；用于接真模型，评测口径
   不变（把 RuleExtractor 换成本类，重跑同一条命令即可复现 README 流程）。
+- ``HybridExtractor``：组合前两者的混合抽取器——LLM 为主、LLM 抽空时
+  回退规则底线（真模型空抽召回波动的架构级修复），开关默认开、事件留痕。
 
 抽取只负责"说出事实"，**不判断**新旧与矛盾 —— 那是 ops 决策层的职责。
 """
@@ -38,6 +40,7 @@ __all__ = [
     "BaseExtractor",
     "RuleExtractor",
     "OpenAICompatibleExtractor",
+    "HybridExtractor",
     "COMPANY_ALIASES",
     "is_question",
 ]
@@ -332,3 +335,62 @@ class OpenAICompatibleExtractor(BaseExtractor):
             except (KeyError, TypeError, ValueError):
                 logger.warning("跳过无法解析的事实项：%s", it)
         return facts
+
+
+class HybridExtractor(BaseExtractor):
+    """混合抽取器：LLM 为主、规则底线兜底（LLM 空抽召回波动的架构级修复）。
+
+    背景：真模型复测定稿残差 1 条是 LLM 抽取召回波动——temperature=0 下
+    同一输入也可能返回空（evals/eval_set100_real_compare_v3.md：W09"滴滴挂了"
+    三轮两次全匹配、一次空抽）。LLM 抽空时回退 :class:`RuleExtractor`：
+    规则底线保证"说过的求职事实不因 LLM 抽空而丢"。这正是混合架构
+    （规则打底 + LLM 增强）的职责边界——兜底做在抽取器组合层，
+    归一化层（normalize.py）不偷跑规则抽取，两路对比口径保持可归因。
+
+    - 开关默认开（``enabled=True``）；关闭时行为与 primary 完全一致。
+    - 每次走到兜底路径都留事件（``events`` 列表 + 日志），``rescued`` 标记
+      规则是否实际救回——LLM 抽空但规则也无事实（疑问句/寒暄）不算事故，
+      但同样留痕，方便统计空抽率与救回率。
+    - 兜底只在"结果为空"时触发：LLM 非空但抽得比规则少不合并——部分召回
+      混流会让两路对比口径失去归因（规则事实混进 LLM 结果），不在本层做。
+    """
+
+    name = "hybrid"
+
+    def __init__(
+        self,
+        primary: BaseExtractor,
+        fallback: Optional[RuleExtractor] = None,
+        enabled: bool = True,
+    ) -> None:
+        self.primary = primary
+        self.fallback = fallback or RuleExtractor()
+        self.enabled = enabled
+        self.events: list[dict] = []
+
+    def extract(
+        self, turn: str, session_id: str = "", now: Optional[float] = None
+    ) -> list[ExtractedFact]:
+        facts = self.primary.extract(turn, session_id, now)
+        if facts or not self.enabled:
+            return facts
+        rescued = self.fallback.extract(turn, session_id, now)
+        self.events.append(
+            {
+                "session_id": session_id,
+                "turn": turn,
+                "llm_facts": 0,
+                "fallback_used": True,
+                "rescued": bool(rescued),
+                "facts": [list(f.triple_key) for f in rescued],
+            }
+        )
+        if rescued:
+            logger.warning(
+                "LLM 抽取为空，规则兜底救回 %d 条事实：%s",
+                len(rescued),
+                [f.triple_key for f in rescued],
+            )
+        else:
+            logger.info("LLM 抽取为空，规则兜底也无事实（疑问句/寒暄/口语句）")
+        return rescued

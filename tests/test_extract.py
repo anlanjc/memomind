@@ -1,16 +1,26 @@
-"""extract.py：规则抽取确定性 + OpenAI 兼容抽取器（MockTransport，无网络）。"""
+"""extract.py：规则抽取确定性 + OpenAI 兼容抽取器（MockTransport，无网络）+ 混合兜底。"""
 
 from __future__ import annotations
+
+import logging
+from typing import Optional
 
 import httpx
 import pytest
 
+from memomind.chat import MemoChat
 from memomind.extract import (
+    BaseExtractor,
+    HybridExtractor,
     OpenAICompatibleExtractor,
     RuleExtractor,
     is_question,
 )
 from memomind.llm import MissingLLMConfigError, OpenAICompatibleClient
+from memomind.ops import RuleOpsDecider
+from memomind.retrieve import RetrievalConfig, Retriever
+from memomind.schema import ExtractedFact
+from memomind.store import MemoryStore
 
 
 # -- 规则抽取器 ---------------------------------------------------------------
@@ -110,3 +120,108 @@ def test_missing_api_key_raises_clear_error(monkeypatch):
     with pytest.raises(MissingLLMConfigError) as ei:
         OpenAICompatibleExtractor()
     assert "MEMOMIND_LLM_API_KEY" in str(ei.value)
+
+
+# -- HybridExtractor：LLM 空抽的规则兜底（混合架构接线） -----------------------
+class _StubExtractor(BaseExtractor):
+    """确定性桩：永远返回预设事实（默认空 = 模拟 LLM 空抽），无网络。"""
+
+    name = "stub"
+
+    def __init__(self, preset: Optional[list[ExtractedFact]] = None) -> None:
+        self.preset = list(preset or [])
+        self.calls = 0
+
+    def extract(self, turn, session_id="", now=None):
+        self.calls += 1
+        return list(self.preset)
+
+
+class _CountingRule(RuleExtractor):
+    """规则兜底计数桩：验证"LLM 非空时不该触发兜底"。"""
+
+    def __init__(self):
+        super().__init__()
+        self.calls = 0
+
+    def extract(self, turn, session_id="", now=None):
+        self.calls += 1
+        return super().extract(turn, session_id, now)
+
+
+def test_hybrid_passthrough_when_llm_returns_facts():
+    preset = [ExtractedFact("user", "applied_to", "字节跳动", "application", 0.9)]
+    fallback = _CountingRule()
+    hy = HybridExtractor(_StubExtractor(preset), fallback=fallback)
+    facts = hy.extract("我投了字节跳动")
+    assert [(f.predicate, f.object) for f in facts] == [("applied_to", "字节跳动")]
+    assert fallback.calls == 0  # LLM 非空，兜底不该被触发
+    assert hy.events == []
+
+
+def test_hybrid_fallback_rescues_on_llm_empty(caplog):
+    hy = HybridExtractor(_StubExtractor(), fallback=RuleExtractor())
+    with caplog.at_level(logging.WARNING, logger="memomind.extract"):
+        facts = hy.extract("我投了字节跳动")
+    triples = {(f.predicate, f.object) for f in facts}
+    assert ("applied_to", "字节跳动") in triples
+    assert ("application_status", "字节跳动:submitted") in triples
+    # 事件留痕：触发 + 救回 + 救回的具体事实，可观测
+    assert len(hy.events) == 1
+    ev = hy.events[0]
+    assert ev["fallback_used"] is True and ev["rescued"] is True
+    assert ev["turn"] == "我投了字节跳动"
+    assert ev["facts"] == [["user", "applied_to", "字节跳动"],
+                           ["user", "application_status", "字节跳动:submitted"]]
+    assert any("规则兜底救回" in r.message for r in caplog.records)
+
+
+def test_hybrid_fallback_no_rescue_on_question():
+    hy = HybridExtractor(_StubExtractor(), fallback=RuleExtractor())
+    assert hy.extract("我叫什么名字？") == []
+    assert len(hy.events) == 1
+    assert hy.events[0]["rescued"] is False  # 疑问句抽空不是事故，但同样留痕
+
+
+def test_hybrid_disabled_passthrough_empty():
+    fallback = _CountingRule()
+    hy = HybridExtractor(_StubExtractor(), fallback=fallback, enabled=False)
+    assert hy.extract("我投了字节跳动") == []
+    assert fallback.calls == 0
+    assert hy.events == []
+
+
+def test_hybrid_no_merge_on_partial_recall():
+    # 边界：LLM 非空但抽得比规则少——不合并混流（保持对比口径可归因）
+    preset = [ExtractedFact("user", "applied_to", "字节跳动", "application", 0.9)]
+    fallback = _CountingRule()
+    hy = HybridExtractor(_StubExtractor(preset), fallback=fallback)
+    facts = hy.extract("我投了字节跳动")
+    assert len(facts) == 1
+    assert fallback.calls == 0
+    assert hy.events == []
+
+
+def test_hybrid_events_accumulate_with_rescued_flag():
+    hy = HybridExtractor(_StubExtractor(), fallback=RuleExtractor())
+    hy.extract("我投了美团")
+    hy.extract("我叫什么名字？")
+    hy.extract("我投了快手")
+    assert len(hy.events) == 3
+    assert [e["rescued"] for e in hy.events] == [True, False, True]
+
+
+def test_hybrid_wired_into_chat_pipeline(clock):
+    store = MemoryStore(":memory:", clock=clock)
+    bot = MemoChat(
+        store,
+        HybridExtractor(_StubExtractor()),  # LLM 全空抽
+        ops_decider=RuleOpsDecider(),
+        retriever=Retriever(store, RetrievalConfig(), clock=clock),
+        clock=clock,
+    )
+    result = bot.handle("s1", "我投了字节跳动")
+    assert result.facts_extracted  # 兜底救回的事实进了管线
+    assert any(r.predicate == "applied_to" and r.object == "字节跳动"
+               for r in store.list(status="active"))
+    store.close()
