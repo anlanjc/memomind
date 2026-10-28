@@ -1,0 +1,2 @@
+memomind pytest 全量（2026-10-29，MM-2 会话，谓词映射层落地后）
+118 passed, 1 warning in 2.57s

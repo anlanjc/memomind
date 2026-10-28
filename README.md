@@ -52,12 +52,15 @@ retrieve(检索+touch) → render(注入块) → respond(应答) → extract(抽
 python -m venv .venv
 .venv/Scripts/python -m pip install -i https://pypi.org/simple/ -r requirements.txt
 
-# 测试（70 个，全 mock 无网络，<1s）
+# 测试（118 个，全 mock 无网络）
 .venv/Scripts/python -m pytest -q
 
-# 评测（20 个脚本化跨会话场景，输出分维度正确率）
+# 评测 v1（20 个脚本化跨会话场景，输出分维度正确率）
 .venv/Scripts/python -m evals.run_evals
 .venv/Scripts/python -m evals.run_evals --verbose --json
+
+# 评测 v2（100 条跨会话用例，5 层对抗视角，mock 应 100/100）
+.venv/Scripts/python evals/run_eval_set100.py
 
 # 面试演示（3 个确定性会话，打印每步记忆轨迹）
 .venv/Scripts/python scripts/demo.py
@@ -75,6 +78,8 @@ export MEMOMIND_LLM_MODEL="qwen-plus"
 ```
 
 设了 key，API 层自动切换为 LLM 抽取 + LLM 决策 + LLM 应答；不设则全确定性 mock。
+LLM 抽取输出经 `memomind/normalize.py` 谓词映射层归一成规范谓词
+（真模型对比 0/20→19/20 的修复，见 `evals/eval_set100_report.md`）。
 
 ## 三、目录结构
 
@@ -84,6 +89,7 @@ memomind/
 │   ├── schema.py             # 数据模型：MemoryRecord / ExtractedFact / MemoryOp
 │   ├── store.py              # SQLite 存储 + FTS5 索引 + networkx 图视图
 │   ├── extract.py            # 事实抽取：RuleExtractor（确定性）+ OpenAICompatibleExtractor
+│   ├── normalize.py          # 谓词映射层：LLM 自由谓词/实体 -> 规范词典（确定性后处理）
 │   ├── ops.py                # ★ 操作决策：ADD/UPDATE/DELETE/NOOP 决策矩阵 + 冲突消解
 │   ├── retrieve.py           # 混合检索：FTS5 词面 + 意图映射 + 图邻域 + 时间衰减排序
 │   ├── decay.py              # 遗忘：过期归档 / 指数衰减 / compaction
@@ -94,7 +100,7 @@ memomind/
 ├── evals/
 │   ├── scenarios.py          # 20 个脚本化跨会话场景（5 维度 × 4）
 │   └── run_evals.py          # 评测执行器：分维度正确率 + --json
-├── tests/                    # 70 个 pytest（store/extract/ops/retrieve/decay/chat/api）
+├── tests/                    # 118 个 pytest（store/extract/normalize/ops/retrieve/decay/chat/api）
 ├── scripts/demo.py           # 3 个确定性演示会话
 ├── docs/TAKEOVER.md          # 接手指南：白板重写清单 / 必做实验 / 原创扩展
 ├── pyproject.toml
@@ -206,13 +212,14 @@ $ python -m evals.run_evals
 
 ```text
 $ python -m pytest -q
-70 passed in 0.78s
+118 passed in 2.60s
 ```
 
-测试分布：store 10（往返/FTS 同步/图时间有效性/持久化）、extract 11（规则确定性 +
-OpenAI 兼容 MockTransport + 缺 key 异常）、ops 12（决策矩阵全分支 + 同轮自洽 +
-LLM 决策器回退）、retrieve 8（排序/衰减/意图/图扩展/预算）、decay 8、chat 6、
-api 6、schema 6。全 mock 无网络。
+测试分布：normalize 29（谓词词典/亚词兜底/极性修正/伴随补全/实体归一）、store 12
+（往返/FTS 同步/图时间有效性/持久化）、ops 14（决策矩阵全分支 + 同轮自洽 +
+LLM 决策器回退）、extract 11（规则确定性 + OpenAI 兼容 MockTransport + 缺 key
+异常）、transfer 11、retrieve 8（排序/衰减/意图/图扩展/预算）、decay 8、
+embedding 7、chat 6、api 6、schema 6。全 mock 无网络。
 
 ## 六、与 Mem0 / Letta / Zep 的对比
 
@@ -224,7 +231,7 @@ api 6、schema 6。全 mock 无网络。
 | 检索 | FTS5 词面 + 意图映射 + 图邻域 + 时间衰减 | 向量 + 关键词混合 | 关键词 + 嵌入检索 | 图遍历 + 余弦 + BM25 混合 |
 | 遗忘 | 三层：过期/衰减归档 + compaction GC | 弱（靠决策 DELETE） | 归档分层 | 边级时间有效性 |
 | 依赖 | sqlite3+networkx+fastapi，6 个直接依赖 | 向量库 + LLM 必选 | 较重 | Neo4j / FalkorDB 必选 |
-| 可测试性 | 全链路确定性 mock，79 测试 + 20 评测 | 依赖真模型，评测成本高 | 同左 | 同左 |
+| 可测试性 | 全链路确定性 mock，118 测试 + 100 评测 | 依赖真模型，评测成本高 | 同左 | 同左 |
 
 **取舍说明**：生产级系统里语义检索应该用 embedding（Mem0/Zep 路线），本项目刻意用
 "词面+意图映射+图邻域"把语义缺口补到"评测可断言"的程度，换来全链路确定性——
