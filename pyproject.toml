@@ -1,0 +1,17 @@
+[project]
+name = "memomind"
+version = "0.1.0"
+description = "Agent 长期记忆系统：抽取->操作决策->存储->检索->遗忘 全链路（求职记忆助理场景）"
+requires-python = ">=3.10"
+dependencies = [
+    "networkx",
+    "fastapi",
+    "uvicorn",
+    "httpx",
+    "pydantic",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

@@ -1,0 +1,11 @@
+"""requirements.txt —— pip 安装务必带官方源索引：
+    pip install -i https://pypi.org/simple/ -r requirements.txt
+（默认镜像源可能 403。）
+"""
+
+networkx
+fastapi
+uvicorn
+httpx
+pydantic
+pytest

@@ -1,0 +1,3852 @@
+[
+ {
+  "sid": "U01",
+  "layer": "事实更新",
+  "title": "目标岗位 后端→Agent（单值更替）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "改投 Agent 岗了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "target_role",
+     "Agent岗"
+    ]
+   ],
+   "superseded": [
+    [
+     "target_role",
+     "后端岗"
+    ]
+   ],
+   "count_active_pred": {
+    "target_role": 1
+   }
+  }
+ },
+ {
+  "sid": "U02",
+  "layer": "事实更新",
+  "title": "目标岗位 Agent→算法（转向措辞）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "想投 Agent 岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "转向算法",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "target_role",
+     "算法"
+    ]
+   ],
+   "superseded": [
+    [
+     "target_role",
+     "Agent岗"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U03",
+  "layer": "事实更新",
+  "title": "期望城市 北京→杭州",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去北京工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去杭州工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers_city",
+     "杭州"
+    ]
+   ],
+   "superseded": [
+    [
+     "prefers_city",
+     "北京"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U04",
+  "layer": "事实更新",
+  "title": "期望城市 上海→成都（搬家措辞）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去上海工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "想搬到成都",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers_city",
+     "成都"
+    ]
+   ],
+   "superseded": [
+    [
+     "prefers_city",
+     "上海"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U05",
+  "layer": "事实更新",
+  "title": "在职公司 美团→字节",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在美团工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在字节工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "works_at",
+     "美团"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U06",
+  "layer": "事实更新",
+  "title": "在职公司 华为→腾讯（上班措辞）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在华为工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在腾讯上班",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "腾讯"
+    ]
+   ],
+   "superseded": [
+    [
+     "works_at",
+     "华为"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U07",
+  "layer": "事实更新",
+  "title": "姓名 李雷→韩梅梅（functional 谓词更替）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫韩梅梅",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "韩梅梅"
+    ]
+   ],
+   "superseded": [
+    [
+     "name",
+     "李雷"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U08",
+  "layer": "事实更新",
+  "title": "重复技能 熟悉→掌握（B1 强化而非新增）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我熟悉 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我掌握 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "uses",
+     "Python"
+    ]
+   ],
+   "count_active_pred": {
+    "uses": 1
+   },
+   "ops_last_any": [
+    {
+     "op": "UPDATE",
+     "update_kind": "strengthen"
+    }
+   ],
+   "conf_gt": [
+    [
+     "uses",
+     "Python",
+     0.88
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U09",
+  "layer": "事实更新",
+  "title": "完全重复投递（B2 NOOP 不落重复记忆）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "腾讯"
+    ],
+    [
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 1
+   },
+   "ops_last_any": [
+    {
+     "op": "NOOP"
+    }
+   ]
+  }
+ },
+ {
+  "sid": "U10",
+  "layer": "事实更新",
+  "title": "一次投两家 美团和快手（多值并存）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了美团和快手",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "美团"
+    ],
+    [
+     "applied_to",
+     "快手"
+    ],
+    [
+     "application_status",
+     "美团:submitted"
+    ],
+    [
+     "application_status",
+     "快手:submitted"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 2
+   }
+  }
+ },
+ {
+  "sid": "U11",
+  "layer": "事实更新",
+  "title": "新增偏好 远程办公",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我更喜欢远程办公",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers",
+     "远程办公"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U12",
+  "layer": "事实更新",
+  "title": "目标岗位 后端→Agent（改投措辞）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "目标是后端",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "想改投 Agent 岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "target_role",
+     "Agent岗"
+    ]
+   ],
+   "superseded": [
+    [
+     "target_role",
+     "后端"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U13",
+  "layer": "事实更新",
+  "title": "期望城市 深圳→成都（打算去措辞）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "打算去深圳工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去成都工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers_city",
+     "成都"
+    ]
+   ],
+   "superseded": [
+    [
+     "prefers_city",
+     "深圳"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U14",
+  "layer": "事实更新",
+  "title": "同一公司两种说法重复投递（归一后 B2 NOOP）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 1
+   },
+   "ops_last_any": [
+    {
+     "op": "NOOP"
+    }
+   ]
+  }
+ },
+ {
+  "sid": "U15",
+  "layer": "事实更新",
+  "title": "一次报三个技能（多值谓词各落一条）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我熟悉 Python、FastAPI 和 MySQL",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "uses",
+     "Python"
+    ],
+    [
+     "uses",
+     "FastAPI"
+    ],
+    [
+     "uses",
+     "MySQL"
+    ]
+   ],
+   "count_active_pred": {
+    "uses": 3
+   }
+  }
+ },
+ {
+  "sid": "U16",
+  "layer": "事实更新",
+  "title": "一句话两个事实（姓名+目标岗位）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫王芳，我想投测试岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "王芳"
+    ],
+    [
+     "target_role",
+     "测试岗"
+    ]
+   ],
+   "count_active": 2
+  }
+ },
+ {
+  "sid": "U17",
+  "layer": "事实更新",
+  "title": "城市三连更替 北京→上海→广州",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去北京工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去上海工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我想去广州工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers_city",
+     "广州"
+    ]
+   ],
+   "superseded": [
+    [
+     "prefers_city",
+     "北京"
+    ],
+    [
+     "prefers_city",
+     "上海"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U18",
+  "layer": "事实更新",
+  "title": "城市改回原地 北京→杭州→北京",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去北京工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去杭州工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我想去北京工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers_city",
+     "北京"
+    ]
+   ],
+   "superseded": [
+    [
+     "prefers_city",
+     "杭州"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U19",
+  "layer": "事实更新",
+  "title": "目标岗位无后缀→带工程师后缀",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "想投后端",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "想投算法工程师",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "target_role",
+     "算法工程师"
+    ]
+   ],
+   "superseded": [
+    [
+     "target_role",
+     "后端"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "U20",
+  "layer": "事实更新",
+  "title": "偏好两条并存（per_object 不冲突）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我更喜欢大厂",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我更喜欢远程办公",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "prefers",
+     "大厂"
+    ],
+    [
+     "prefers",
+     "远程办公"
+    ]
+   ],
+   "count_active_pred": {
+    "prefers": 2
+   }
+  }
+ },
+ {
+  "sid": "W01",
+  "layer": "冲突撤回",
+  "title": "投递→流程结束（状态替代，历史保留）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ],
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W02",
+  "layer": "冲突撤回",
+  "title": "面试中→挂了",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到字节的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:interviewing"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W03",
+  "layer": "冲突撤回",
+  "title": "取消申请（撤销型事实失效投递记忆）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了阿里巴巴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消阿里的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "阿里巴巴"
+    ],
+    [
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W04",
+  "layer": "冲突撤回",
+  "title": "无中生有的撤销（撤销意图留档）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "不想投腾讯了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W05",
+  "layer": "冲突撤回",
+  "title": "投递→拿 offer",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "收到字节的offer",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:offer"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W06",
+  "layer": "冲突撤回",
+  "title": "撤回两家投递中的一家（另一家不受影响）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了美团和快手",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消快手的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "美团"
+    ],
+    [
+     "application_status",
+     "美团:submitted"
+    ],
+    [
+     "withdrawn",
+     "快手"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "快手"
+    ],
+    [
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W07",
+  "layer": "冲突撤回",
+  "title": "状态三连 ended→新面试（复活合法化）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "收到字节的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:interviewing"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W08",
+  "layer": "冲突撤回",
+  "title": "在职公司 字节→阿里（矛盾替代）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在字节工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在阿里工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "阿里巴巴"
+    ]
+   ],
+   "superseded": [
+    [
+     "works_at",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W09",
+  "layer": "冲突撤回",
+  "title": "裸挂了陈述（company2 分支）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "滴滴挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W10",
+  "layer": "冲突撤回",
+  "title": "撤销后重投同一公司（新投递生效，撤销留档）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消腾讯的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我又投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "腾讯"
+    ],
+    [
+     "application_status",
+     "腾讯:submitted"
+    ],
+    [
+     "withdrawn",
+     "腾讯"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "腾讯"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W11",
+  "layer": "冲突撤回",
+  "title": "重复撤销同一公司（C1 无去重，重复留档）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了京东",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消京东的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "不想投京东了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "京东"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "京东"
+    ],
+    [
+     "application_status",
+     "京东:submitted"
+    ]
+   ],
+   "count_active_pred": {
+    "withdrawn": 2
+   },
+   "ops_last_any": [
+    {
+     "op": "ADD"
+    }
+   ]
+  }
+ },
+ {
+  "sid": "W12",
+  "layer": "冲突撤回",
+  "title": "直接说挂了（无投递前置）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "字节挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W13",
+  "layer": "冲突撤回",
+  "title": "面试→offer→结束（状态机三跳）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到美团的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "收到美团的offer",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "美团流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "美团:ended"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "美团:interviewing"
+    ],
+    [
+     "application_status",
+     "美团:offer"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W14",
+  "layer": "冲突撤回",
+  "title": "短称撤销全称投递（归一后命中撤销目标）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消字节的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W15",
+  "layer": "冲突撤回",
+  "title": "三家公司只挂一家（其余不受影响）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯和阿里",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "阿里的流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "腾讯:submitted"
+    ],
+    [
+     "application_status",
+     "阿里巴巴:ended"
+    ],
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "applied_to",
+     "腾讯"
+    ],
+    [
+     "applied_to",
+     "阿里巴巴"
+    ],
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "superseded": []
+  }
+ },
+ {
+  "sid": "W16",
+  "layer": "冲突撤回",
+  "title": "面试后取消申请",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了美团",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "收到美团的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "取消美团的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "美团"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "美团"
+    ],
+    [
+     "application_status",
+     "美团:submitted"
+    ],
+    [
+     "application_status",
+     "美团:interviewing"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W17",
+  "layer": "冲突撤回",
+  "title": "姓名冲突 小明→小红",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫小明",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫小红",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "小红"
+    ]
+   ],
+   "superseded": [
+    [
+     "name",
+     "小明"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W18",
+  "layer": "冲突撤回",
+  "title": "目标岗位三连 后端→Agent→大模型",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "改投 Agent 岗了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "主要投大模型",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "target_role",
+     "大模型"
+    ]
+   ],
+   "superseded": [
+    [
+     "target_role",
+     "后端岗"
+    ],
+    [
+     "target_role",
+     "Agent岗"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W19",
+  "layer": "冲突撤回",
+  "title": "面试邀请后放弃投递",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到字节的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "不想投字节了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:interviewing"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "W20",
+  "layer": "冲突撤回",
+  "title": "拿到 offer 后取消（撤销命中 offer 状态）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到美团的offer",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消美团的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "美团"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "美团:offer"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A01",
+  "layer": "别名归一",
+  "title": "字节→字节跳动 归一后状态替代",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节跳动的流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ],
+   "count_active_pred": {
+    "application_status": 1
+   }
+  }
+ },
+ {
+  "sid": "A02",
+  "layer": "别名归一",
+  "title": "阿里巴巴→阿里 撤销命中",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了阿里巴巴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消阿里的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A03",
+  "layer": "别名归一",
+  "title": "蚂蚁→蚂蚁集团",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了蚂蚁",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "蚂蚁的流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "蚂蚁集团:ended"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "蚂蚁集团:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A04",
+  "layer": "别名归一",
+  "title": "岗位后缀剥离 字节的Agent岗→字节跳动",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节的Agent岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ],
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A05",
+  "layer": "别名归一",
+  "title": "小写 deepseek→DeepSeek",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "投了deepseek",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "DeepSeek"
+    ]
+   ],
+   "recall_contains": [
+    "DeepSeek"
+   ]
+  }
+ },
+ {
+  "sid": "A06",
+  "layer": "别名归一",
+  "title": "同公司短称/全称状态接续",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了快手",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "收到快手的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "快手:interviewing"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A07",
+  "layer": "别名归一",
+  "title": "后端岗后缀剥离",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节的后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A08",
+  "layer": "别名归一",
+  "title": "一句投两家 短称归一",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了阿里和字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "阿里巴巴"
+    ],
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 2
+   }
+  }
+ },
+ {
+  "sid": "A09",
+  "layer": "别名归一",
+  "title": "裸挂了短称归一",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "字节挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A10",
+  "layer": "别名归一",
+  "title": "在职短称→短称 矛盾替代",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在美团上班",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在字节上班",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "works_at",
+     "美团"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A11",
+  "layer": "别名归一",
+  "title": "全称→全称 在职更替",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我在网易工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我在字节跳动工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "字节跳动"
+    ]
+   ],
+   "superseded": [
+    [
+     "works_at",
+     "网易"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A12",
+  "layer": "别名归一",
+  "title": "面试邀请短称归一",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到蚂蚁的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "蚂蚁集团:interviewing"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A13",
+  "layer": "别名归一",
+  "title": "不想投短称→归一撤销",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "不想投字节了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "withdrawn",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A14",
+  "layer": "别名归一",
+  "title": "全称/短称重复投递（归一后同一事实）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 1
+   },
+   "ops_last_any": [
+    {
+     "op": "NOOP"
+    }
+   ]
+  }
+ },
+ {
+  "sid": "A15",
+  "layer": "别名归一",
+  "title": "offer 短称归一",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到字节的offer",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:offer"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A16",
+  "layer": "别名归一",
+  "title": "短称查询召回全称记忆",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了阿里",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "阿里的进展？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "阿里巴巴"
+    ],
+    [
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   "recall_contains": [
+    "阿里巴巴"
+   ]
+  }
+ },
+ {
+  "sid": "A17",
+  "layer": "别名归一",
+  "title": "全称投递→短称挂了",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ],
+   "superseded": [
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A18",
+  "layer": "别名归一",
+  "title": "在职记忆意图召回",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我在华为工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在哪家公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "works_at",
+     "华为"
+    ]
+   ],
+   "recall_top": "华为"
+  }
+ },
+ {
+  "sid": "A19",
+  "layer": "别名归一",
+  "title": "两家短称投递撤一家",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节和阿里",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消阿里的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ],
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ],
+   "superseded": [
+    [
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "A20",
+  "layer": "别名归一",
+  "title": "岗位后缀变体 Agent岗位",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节的Agent岗位",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D01",
+  "layer": "时序衰减",
+  "title": "120 天无人问津 → 衰减归档且不再干扰检索",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了滴滴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 120,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在该投什么公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "applied_to",
+     "滴滴"
+    ]
+   ],
+   "recall_not_contains": [
+    "滴滴"
+   ]
+  }
+ },
+ {
+  "sid": "D02",
+  "layer": "时序衰减",
+  "title": "带 valid_to 的实习到期归档",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": [
+     [
+      "user",
+      "works_at",
+      "创业公司X",
+      "identity",
+      0.9,
+      90
+     ]
+    ]
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 100,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在哪家公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "works_at",
+     "创业公司X"
+    ]
+   ],
+   "recall_not_contains": [
+    "创业公司X"
+   ]
+  }
+ },
+ {
+  "sid": "D03",
+  "layer": "时序衰减",
+  "title": "中途被想起 → 访问刷新时钟跨 90 天存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 45,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 45,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "李雷"
+    ]
+   ],
+   "recall_contains": [
+    "李雷"
+   ]
+  }
+ },
+ {
+  "sid": "D04",
+  "layer": "时序衰减",
+  "title": "superseded 超 30 天保留期 → compaction 物理清理",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "改投 Agent 岗了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 40,
+    "run_decay": false,
+    "run_compact": true,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "gone": [
+    [
+     "target_role",
+     "后端岗"
+    ]
+   ],
+   "active": [
+    [
+     "target_role",
+     "Agent岗"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D05",
+  "layer": "时序衰减",
+  "title": "差分衰减：低置信偏好先亡，姓名犹存",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我更喜欢大厂",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 75,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "李雷"
+    ]
+   ],
+   "archived": [
+    [
+     "prefers",
+     "大厂"
+    ]
+   ],
+   "recall_contains": [
+    "李雷"
+   ],
+   "recall_not_contains": [
+    "大厂"
+   ]
+  }
+ },
+ {
+  "sid": "D06",
+  "layer": "时序衰减",
+  "title": "80 天空闲的投递恰好跌穿阈值",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 80,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D07",
+  "layer": "时序衰减",
+  "title": "50 天时被想起 → 再过 50 天仍存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投过哪些公司？",
+    "advance_days": 50,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 50,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D08",
+  "layer": "时序衰减",
+  "title": "decay 幂等：重复跑不二次归档",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了滴滴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 90,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "applied_to",
+     "滴滴"
+    ]
+   ],
+   "absent_active": [
+    [
+     "applied_to",
+     "滴滴"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D09",
+  "layer": "时序衰减",
+  "title": "被撤销的投递超保留期 → compaction 清除",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消腾讯的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 40,
+    "run_decay": false,
+    "run_compact": true,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "gone": [
+    [
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   "active": [
+    [
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D10",
+  "layer": "时序衰减",
+  "title": "归档记忆超 90 天保留期 → compaction 清除",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": [
+     [
+      "user",
+      "works_at",
+      "创业公司X",
+      "identity",
+      0.9,
+      30
+     ]
+    ]
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 40,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 100,
+    "run_decay": false,
+    "run_compact": true,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "gone": [
+    [
+     "works_at",
+     "创业公司X"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D11",
+  "layer": "时序衰减",
+  "title": "衰减归档后重新投递 → 新记录生效旧记录留档",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 85,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "archived": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "count_active_pred": {
+    "applied_to": 1
+   }
+  }
+ },
+ {
+  "sid": "D12",
+  "layer": "时序衰减",
+  "title": "valid_to 当天到期即归档（边界 >=）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": [
+     [
+      "user",
+      "works_at",
+      "某大厂",
+      "identity",
+      0.95,
+      30
+     ]
+    ]
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "works_at",
+     "某大厂"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D13",
+  "layer": "时序衰减",
+  "title": "无有效期的姓名 30 天不衰减",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": [
+     [
+      "user",
+      "name",
+      "李雷",
+      "identity",
+      0.99,
+      null
+     ]
+    ]
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "李雷"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D14",
+  "layer": "时序衰减",
+  "title": "三次 30 天渐进衰减最终归档",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "archived": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D15",
+  "layer": "时序衰减",
+  "title": "60 天时查询刷新 → 再 40 天仍存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节的流程怎么样？",
+    "advance_days": 60,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 40,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "字节跳动"
+    ],
+    [
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D16",
+  "layer": "时序衰减",
+  "title": "先后投两家：旧的衰减归档、新的存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了美团",
+    "advance_days": 60,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 40,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "applied_to",
+     "美团"
+    ]
+   ],
+   "archived": [
+    [
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   "recall_contains": [
+    "美团"
+   ],
+   "recall_not_contains": [
+    "字节跳动"
+   ]
+  }
+ },
+ {
+  "sid": "D17",
+  "layer": "时序衰减",
+  "title": "衰减归档后再过 95 天 → compaction 清除",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了滴滴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 90,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 95,
+    "run_decay": false,
+    "run_compact": true,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "gone": [
+    [
+     "applied_to",
+     "滴滴"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D18",
+  "layer": "时序衰减",
+  "title": "78 天差分：0.85 置信技能归档，0.99 姓名存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我熟悉 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 78,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "李雷"
+    ]
+   ],
+   "archived": [
+    [
+     "uses",
+     "Python"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "D19",
+  "layer": "时序衰减",
+  "title": "衰减加权排序：新投递压过旧投递排第一",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投了美团",
+    "advance_days": 40,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我投过哪些公司？",
+    "advance_days": 10,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "美团",
+   "recall_contains": [
+    "美团",
+    "字节跳动"
+   ]
+  }
+ },
+ {
+  "sid": "D20",
+  "layer": "时序衰减",
+  "title": "每 30 天被想起一次 → 跨 120 天存活",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 30,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我叫什么名字？",
+    "advance_days": 30,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s4",
+    "text": "我叫什么名字？",
+    "advance_days": 30,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1",
+    "text": "",
+    "advance_days": 30,
+    "run_decay": true,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "active": [
+    [
+     "name",
+     "李雷"
+    ]
+   ]
+  }
+ },
+ {
+  "sid": "M01",
+  "layer": "多跳召回",
+  "title": "问流程带出投递历史（图邻域+意图）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节的流程怎么样？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 2,
+   "recall_contains": [
+    "字节跳动",
+    "字节跳动:submitted"
+   ]
+  }
+ },
+ {
+  "sid": "M02",
+  "layer": "多跳召回",
+  "title": "问技能召回全部技能（意图映射）",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我熟悉 Python、FastAPI 和 MySQL",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我会什么技术栈？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 3,
+   "recall_contains": [
+    "Python",
+    "FastAPI",
+    "MySQL"
+   ]
+  }
+ },
+ {
+  "sid": "M03",
+  "layer": "多跳召回",
+  "title": "问投递召回两家公司",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 2,
+   "recall_contains": [
+    "腾讯",
+    "字节跳动"
+   ]
+  }
+ },
+ {
+  "sid": "M04",
+  "layer": "多跳召回",
+  "title": "偏好意图只命中偏好记忆",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我更喜欢大厂",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我喜欢什么样的公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "大厂"
+  }
+ },
+ {
+  "sid": "M05",
+  "layer": "多跳召回",
+  "title": "问 offer 召回 offer 状态",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "收到字节的offer",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "offer 什么时候到？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_contains": [
+    "字节跳动:offer"
+   ]
+  }
+ },
+ {
+  "sid": "M06",
+  "layer": "多跳召回",
+  "title": "问投递召回三家公司",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了腾讯和阿里",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了字节",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 3
+  }
+ },
+ {
+  "sid": "M07",
+  "layer": "多跳召回",
+  "title": "问名字跨会话召回",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷，我想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "李雷",
+   "recall_contains": [
+    "李雷"
+   ]
+  }
+ },
+ {
+  "sid": "M08",
+  "layer": "多跳召回",
+  "title": "问城市召回期望城市",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去杭州工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去哪个城市？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "杭州"
+  }
+ },
+ {
+  "sid": "M09",
+  "layer": "多跳召回",
+  "title": "问在职公司召回 works_at",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在美团工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我现在在哪家公司上班？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "美团"
+  }
+ },
+ {
+  "sid": "M10",
+  "layer": "多跳召回",
+  "title": "多轮穿插后仍召回姓名",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫王芳，我投了腾讯",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我熟悉 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "王芳"
+  }
+ },
+ {
+  "sid": "M11",
+  "layer": "多跳召回",
+  "title": "挂掉后检索只见 ended 不见 interviewing",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "收到字节的面试邀请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节挂了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "字节的近况？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_contains": [
+    "字节跳动:ended"
+   ],
+   "recall_not_contains": [
+    "interviewing"
+   ]
+  }
+ },
+ {
+  "sid": "M12",
+  "layer": "多跳召回",
+  "title": "撤回后投递记忆不再被召回",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了阿里巴巴",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "取消阿里的申请",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_not_contains": [
+    "阿里巴巴"
+   ]
+  }
+ },
+ {
+  "sid": "M13",
+  "layer": "多跳召回",
+  "title": "流程结束后历史仍可召回",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节流程结束了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我投过哪些公司？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_contains": [
+    "字节跳动"
+   ]
+  }
+ },
+ {
+  "sid": "M14",
+  "layer": "多跳召回",
+  "title": "技能更新后问技能召回新旧两条",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我熟悉 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我掌握 Rust",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我会什么技能？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 2,
+   "recall_contains": [
+    "Python",
+    "Rust"
+   ]
+  }
+ },
+ {
+  "sid": "M15",
+  "layer": "多跳召回",
+  "title": "岗位更替后召回只出新岗位",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想投后端岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "改投 Agent 岗了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我的目标岗位是什么？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "Agent岗",
+   "recall_not_contains": [
+    "后端岗"
+   ]
+  }
+ },
+ {
+  "sid": "M16",
+  "layer": "多跳召回",
+  "title": "城市更替后召回只出新城市",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我想去北京工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我想去杭州工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s3",
+    "text": "我想去哪个城市发展？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "杭州",
+   "recall_not_contains": [
+    "北京"
+   ]
+  }
+ },
+ {
+  "sid": "M17",
+  "layer": "多跳召回",
+  "title": "三类记忆并存时问名字精确命中",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫李雷",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我熟悉 Python",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1c",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "李雷",
+   "recall_min": 1
+  }
+ },
+ {
+  "sid": "M18",
+  "layer": "多跳召回",
+  "title": "查询同时提到两家公司",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了美团",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "字节和美团哪家先给消息？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 2
+  }
+ },
+ {
+  "sid": "M19",
+  "layer": "多跳召回",
+  "title": "提公司名带出在职+投递+状态三条",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我现在在字节工作",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "在字节工作感觉怎么样？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_min": 2,
+   "recall_contains": [
+    "字节跳动"
+   ]
+  }
+ },
+ {
+  "sid": "M20",
+  "layer": "多跳召回",
+  "title": "全链路：自我介绍+投递+改岗后问姓名",
+  "steps": [
+   {
+    "session": "s1",
+    "text": "我叫王芳，我想投 Agent 岗",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1b",
+    "text": "我投了字节跳动",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s1c",
+    "text": "改投后端岗了",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   },
+   {
+    "session": "s2",
+    "text": "我叫什么名字？",
+    "advance_days": 0.0,
+    "run_decay": false,
+    "run_compact": false,
+    "seeds": []
+   }
+  ],
+  "expect": {
+   "recall_top": "王芳",
+   "count_active_pred": {
+    "name": 1,
+    "target_role": 1,
+    "applied_to": 1
+   }
+  }
+ }
+]

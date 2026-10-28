@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>memomind 记忆浏览器</title>
+<style>
+  :root { --bg:#0f1115; --panel:#181b22; --line:#2a2f3a; --fg:#e6e9f0; --dim:#8b93a5;
+          --acc:#5b8cff; --ok:#3fb96f; --warn:#d9a13b; --bad:#d95b5b; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font:14px/1.6 "Segoe UI","Microsoft YaHei",sans-serif; }
+  header { padding:14px 22px; border-bottom:1px solid var(--line); display:flex; gap:16px; align-items:baseline; }
+  header h1 { font-size:18px; } header span { color:var(--dim); font-size:12px; }
+  main { display:grid; grid-template-columns: 1fr 380px; gap:14px; padding:14px 22px; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  h2 { font-size:14px; margin-bottom:10px; color:var(--acc); }
+  .bar { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+  input, button, select { background:#22262f; color:var(--fg); border:1px solid var(--line);
+        border-radius:6px; padding:6px 10px; font-size:13px; }
+  button { cursor:pointer; } button:hover { border-color:var(--acc); }
+  input[type=text] { min-width:220px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--dim); font-weight:500; }
+  .tag { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; }
+  .active { background:#1d3b2a; color:var(--ok); }
+  .superseded { background:#3b3220; color:var(--warn); }
+  .archived { background:#3b2323; color:var(--bad); }
+  .conf { color:var(--dim); }
+  #graphBox { min-height:300px; position:relative; }
+  svg { width:100%; height:340px; }
+  .edgeLabel { font-size:10px; fill:var(--dim); }
+  .nodeLabel { font-size:12px; fill:var(--fg); }
+  pre { white-space:pre-wrap; font-size:12px; color:var(--dim); }
+  .chatlog { max-height:260px; overflow:auto; display:flex; flex-direction:column; gap:8px; }
+  .msg { padding:8px 10px; border-radius:8px; }
+  .me { background:#1d2740; align-self:flex-end; max-width:85%; }
+  .bot { background:#22262f; align-self:flex-start; max-width:85%; }
+  .meta { font-size:11px; color:var(--dim); margin-top:4px; }
+  .count { color:var(--dim); font-size:12px; margin-left:6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>memomind 记忆浏览器</h1>
+  <span>Agent 长期记忆系统 · 抽取→决策→存储→检索→遗忘</span>
+  <span id="health"></span>
+</header>
+<main>
+  <section>
+    <h2>对话 <span class="count" id="chatHint">（跨会话：换 session_id 仍记得你）</span></h2>
+    <div class="bar">
+      <input type="text" id="session" value="sess_demo_01" size="12" title="session_id">
+      <input type="text" id="msg" placeholder="例如：我投了字节跳动 / 字节流程结束了 / 我叫什么名字？" style="flex:1">
+      <button id="send">发送</button>
+    </div>
+    <div class="chatlog" id="log"></div>
+
+    <h2 style="margin-top:14px">记忆列表 <span class="count" id="memCount"></span></h2>
+    <div class="bar">
+      <select id="statusFilter">
+        <option value="">全部状态</option>
+        <option value="active" selected>active</option>
+        <option value="superseded">superseded</option>
+        <option value="archived">archived</option>
+      </select>
+      <input type="text" id="q" placeholder="关键词检索">
+      <button id="refresh">刷新</button>
+      <button id="maint">触发遗忘/compaction</button>
+    </div>
+    <table>
+      <thead><tr><th>三元组</th><th>类别</th><th>状态</th><th>置信度</th><th>来源</th><th>有效期</th><th></th></tr></thead>
+      <tbody id="memBody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>实体记忆子图</h2>
+    <div class="bar">
+      <input type="text" id="entity" placeholder="实体，如：字节跳动 / user" value="user">
+      <button id="graphBtn">查看子图</button>
+    </div>
+    <div id="graphBox"><svg id="graphSvg"></svg><pre id="graphEmpty">输入实体查看一跳关系子图。</pre></div>
+    <pre id="graphMeta"></pre>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+
+async function health() {
+  try {
+    const r = await fetch('/health'); const j = await r.json();
+    $('health').textContent = `记忆总数 ${j.memories} · active ${j.active}`;
+  } catch (e) { $('health').textContent = 'API 不可达'; }
+}
+
+async function sendChat() {
+  const msg = $('msg').value.trim(); if (!msg) return;
+  const session = $('session').value.trim() || 'sess_default';
+  addMsg('me', msg);
+  $('msg').value = '';
+  try {
+    const r = await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ session_id: session, message: msg }) });
+    const j = await r.json();
+    const ops = (j.ops||[]).map(o => o.op).join(',') || '无';
+    addMsg('bot', j.reply, `记忆命中 ${j.memories_used.length} · 抽取 ${j.facts_extracted.length} · 决策 ${ops}`);
+  } catch (e) { addMsg('bot', '请求失败：' + e); }
+  refreshMemories(); health();
+}
+function addMsg(kind, text, meta) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + kind;
+  div.textContent = text;
+  if (meta) { const m = document.createElement('div'); m.className='meta'; m.textContent = meta; div.appendChild(m); }
+  $('log').appendChild(div); $('log').scrollTop = $('log').scrollHeight;
+}
+
+async function refreshMemories() {
+  const status = $('statusFilter').value;
+  const q = $('q').value.trim();
+  const url = '/memories?' + new URLSearchParams({ ...(status ? {status} : {}), ...(q ? {q} : {}) });
+  const j = await (await fetch(url)).json();
+  $('memCount').textContent = `（${j.count} 条）`;
+  const body = $('memBody'); body.innerHTML = '';
+  for (const m of j.memories) {
+    const tr = document.createElement('tr');
+    const vf = new Date(m.valid_from*1000).toISOString().slice(0,10);
+    const vt = m.valid_to ? new Date(m.valid_to*1000).toISOString().slice(0,10) : '∞';
+    tr.innerHTML = `<td>${m.subject} <b>${m.predicate}</b> ${m.object}</td>
+      <td>${m.category}</td><td><span class="tag ${m.status}">${m.status}</span></td>
+      <td class="conf">${m.confidence.toFixed(2)}</td><td class="conf">${m.source_session}</td>
+      <td class="conf">${vf} ~ ${vt}</td>`;
+    if (m.status === 'active') {
+      const td = document.createElement('td');
+      const btn = document.createElement('button'); btn.textContent = '遗忘';
+      btn.onclick = async () => {
+        await fetch('/forget', { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ memory_id: m.id }) });
+        refreshMemories(); health();
+      };
+      td.appendChild(btn); tr.appendChild(td);
+    } else { tr.appendChild(document.createElement('td')); }
+    body.appendChild(tr);
+  }
+}
+
+async function drawGraph() {
+  const entity = $('entity').value.trim(); if (!entity) return;
+  const j = await (await fetch('/graph/' + encodeURIComponent(entity))).json();
+  $('graphEmpty').style.display = j.nodes.length ? 'none' : 'block';
+  $('graphMeta').textContent = `节点 ${j.nodes.length} · 边 ${j.edges.length}`;
+  const svg = $('graphSvg'); svg.innerHTML = '';
+  if (!j.nodes.length) return;
+  const W = 360, H = 320, cx = W/2, cy = H/2;
+  const pos = {};
+  j.nodes.forEach((n, i) => {
+    if (i === 0) { pos[n.id] = [cx, cy]; return; }
+    const ang = (2*Math.PI*(i-1))/(Math.max(1,j.nodes.length-1));
+    pos[n.id] = [cx + 120*Math.cos(ang), cy + 110*Math.sin(ang)];
+  });
+  const NS = 'http://www.w3.org/2000/svg';
+  for (const e of j.edges) {
+    const [x1,y1] = pos[e.source]||[cx,cy], [x2,y2] = pos[e.target]||[cx,cy];
+    const line = document.createElementNS(NS,'line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('stroke','#3a4152'); line.setAttribute('stroke-width','1.2');
+    svg.appendChild(line);
+    const label = document.createElementNS(NS,'text');
+    label.setAttribute('x',(x1+x2)/2); label.setAttribute('y',(y1+y2)/2 - 3);
+    label.setAttribute('text-anchor','middle'); label.setAttribute('class','edgeLabel');
+    label.textContent = e.predicate;
+    svg.appendChild(label);
+  }
+  for (const n of j.nodes) {
+    const [x,y] = pos[n.id];
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',y);
+    c.setAttribute('r', n.id===entity?12:8);
+    c.setAttribute('fill', n.id===entity?'#5b8cff':'#2c3444');
+    c.setAttribute('stroke','#5b8cff'); svg.appendChild(c);
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('x',x); t.setAttribute('y',y-16);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('class','nodeLabel');
+    t.textContent = n.id; svg.appendChild(t);
+  }
+}
+
+$('send').onclick = sendChat;
+$('msg').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+$('refresh').onclick = refreshMemories;
+$('statusFilter').onchange = refreshMemories;
+$('graphBtn').onclick = drawGraph;
+$('entity').addEventListener('keydown', e => { if (e.key === 'Enter') drawGraph(); });
+$('maint').onclick = async () => {
+  await fetch('/maintenance', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ run_decay:true, run_compact:true }) });
+  refreshMemories(); health();
+};
+refreshMemories(); health(); drawGraph();
+</script>
+</body>
+</html>

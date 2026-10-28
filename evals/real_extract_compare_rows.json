@@ -1,0 +1,936 @@
+[
+ {
+  "sid": "U01",
+  "text": "我想投后端岗",
+  "rule": [
+   [
+    "user",
+    "target_role",
+    "后端岗",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "wants_to_apply_to",
+    "后端岗",
+    0.9,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "target_role",
+    "后端岗"
+   ]
+  ],
+  "llm_only": [
+   [
+    "wants_to_apply_to",
+    "后端岗"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "U08",
+  "text": "我掌握 Python",
+  "rule": [
+   [
+    "user",
+    "uses",
+    "Python",
+    0.88,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "has_skill",
+    "Python",
+    0.95,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "uses",
+    "Python"
+   ]
+  ],
+  "llm_only": [
+   [
+    "has_skill",
+    "Python"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "U10",
+  "text": "我投了美团和快手",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "美团",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "美团:submitted",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "快手",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "快手:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "美团",
+    1.0,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "快手",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "快手"
+   ],
+   [
+    "applied_to",
+    "美团"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "快手:submitted"
+   ],
+   [
+    "application_status",
+    "美团:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "U16",
+  "text": "我叫王芳，我想投测试岗",
+  "rule": [
+   [
+    "user",
+    "name",
+    "王芳",
+    0.99,
+    "positive"
+   ],
+   [
+    "user",
+    "target_role",
+    "测试岗",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "name",
+    "王芳",
+    1.0,
+    "positive"
+   ],
+   [
+    "user",
+    "interested_in",
+    "测试岗",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "name",
+    "王芳"
+   ]
+  ],
+  "rule_only": [
+   [
+    "target_role",
+    "测试岗"
+   ]
+  ],
+  "llm_only": [
+   [
+    "interested_in",
+    "测试岗"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "U17",
+  "text": "我想去广州工作",
+  "rule": [
+   [
+    "user",
+    "prefers_city",
+    "广州",
+    0.8,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "wants_to_work_in",
+    "广州",
+    0.9,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "prefers_city",
+    "广州"
+   ]
+  ],
+  "llm_only": [
+   [
+    "wants_to_work_in",
+    "广州"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "W03",
+  "text": "取消阿里的申请",
+  "rule": [
+   [
+    "user",
+    "withdrawn",
+    "阿里巴巴",
+    0.95,
+    "negative"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "阿里巴巴",
+    1.0,
+    "negative"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "withdrawn",
+    "阿里巴巴"
+   ]
+  ],
+  "llm_only": [
+   [
+    "applied_to",
+    "阿里巴巴"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "W04",
+  "text": "不想投腾讯了",
+  "rule": [
+   [
+    "user",
+    "withdrawn",
+    "腾讯",
+    0.95,
+    "negative"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "腾讯",
+    0.9,
+    "negative"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "withdrawn",
+    "腾讯"
+   ]
+  ],
+  "llm_only": [
+   [
+    "applied_to",
+    "腾讯"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "W05",
+  "text": "收到字节的offer",
+  "rule": [
+   [
+    "user",
+    "application_status",
+    "字节跳动:offer",
+    0.98,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "received_offer_from",
+    "字节跳动",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "application_status",
+    "字节跳动:offer"
+   ]
+  ],
+  "llm_only": [
+   [
+    "received_offer_from",
+    "字节跳动"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "W09",
+  "text": "滴滴挂了",
+  "rule": [
+   [
+    "user",
+    "application_status",
+    "滴滴:ended",
+    0.95,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "was_rejected_by",
+    "滴滴出行",
+    0.85,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "application_status",
+    "滴滴:ended"
+   ]
+  ],
+  "llm_only": [
+   [
+    "was_rejected_by",
+    "滴滴出行"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "W15",
+  "text": "我投了腾讯和阿里",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "腾讯",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "腾讯:submitted",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "阿里巴巴",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "阿里巴巴:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "腾讯",
+    1.0,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "阿里巴巴",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "腾讯"
+   ],
+   [
+    "applied_to",
+    "阿里巴巴"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "腾讯:submitted"
+   ],
+   [
+    "application_status",
+    "阿里巴巴:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "A01",
+  "text": "我投了字节",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "字节跳动:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "字节跳动"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "字节跳动:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "A04",
+  "text": "我投了字节的Agent岗",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "字节跳动:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.95,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "字节跳动"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "字节跳动:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "A05",
+  "text": "投了deepseek",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "DeepSeek",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "DeepSeek:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "DeepSeek",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "DeepSeek"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "DeepSeek:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "A14",
+  "text": "我投了字节跳动",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "字节跳动:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "字节跳动"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "字节跳动:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "D01",
+  "text": "我投了滴滴",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "滴滴",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "滴滴:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "滴滴",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "滴滴"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "滴滴:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "D16",
+  "text": "我投了美团",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "美团",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "美团:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "美团",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "美团"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "美团:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "M01",
+  "text": "我投了字节跳动",
+  "rule": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "字节跳动:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "字节跳动",
+    0.95,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "字节跳动"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "字节跳动:submitted"
+   ]
+  ],
+  "llm_only": [],
+  "exact_match": false
+ },
+ {
+  "sid": "M02",
+  "text": "我熟悉 Python、FastAPI 和 MySQL",
+  "rule": [
+   [
+    "user",
+    "uses",
+    "Python",
+    0.85,
+    "positive"
+   ],
+   [
+    "user",
+    "uses",
+    "FastAPI",
+    0.85,
+    "positive"
+   ],
+   [
+    "user",
+    "uses",
+    "MySQL",
+    0.85,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "has_skill",
+    "Python",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "has_skill",
+    "FastAPI",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "has_skill",
+    "MySQL",
+    0.9,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "uses",
+    "FastAPI"
+   ],
+   [
+    "uses",
+    "MySQL"
+   ],
+   [
+    "uses",
+    "Python"
+   ]
+  ],
+  "llm_only": [
+   [
+    "has_skill",
+    "FastAPI"
+   ],
+   [
+    "has_skill",
+    "MySQL"
+   ],
+   [
+    "has_skill",
+    "Python"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "M10",
+  "text": "我叫王芳，我投了腾讯",
+  "rule": [
+   [
+    "user",
+    "name",
+    "王芳",
+    0.99,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "腾讯",
+    0.9,
+    "positive"
+   ],
+   [
+    "user",
+    "application_status",
+    "腾讯:submitted",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "has_name",
+    "王芳",
+    1.0,
+    "positive"
+   ],
+   [
+    "user",
+    "applied_to",
+    "腾讯",
+    1.0,
+    "positive"
+   ]
+  ],
+  "agree": [
+   [
+    "applied_to",
+    "腾讯"
+   ]
+  ],
+  "rule_only": [
+   [
+    "application_status",
+    "腾讯:submitted"
+   ],
+   [
+    "name",
+    "王芳"
+   ]
+  ],
+  "llm_only": [
+   [
+    "has_name",
+    "王芳"
+   ]
+  ],
+  "exact_match": false
+ },
+ {
+  "sid": "M20",
+  "text": "改投后端岗了",
+  "rule": [
+   [
+    "user",
+    "target_role",
+    "后端岗",
+    0.9,
+    "positive"
+   ]
+  ],
+  "llm": [
+   [
+    "user",
+    "applied_to",
+    "后端岗",
+    0.9,
+    "positive"
+   ]
+  ],
+  "agree": [],
+  "rule_only": [
+   [
+    "target_role",
+    "后端岗"
+   ]
+  ],
+  "llm_only": [
+   [
+    "applied_to",
+    "后端岗"
+   ]
+  ],
+  "exact_match": false
+ }
+]
