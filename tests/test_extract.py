@@ -90,7 +90,12 @@ def test_openai_extractor_parses_facts():
         base_url="http://test", api_key="k", model="m",
         transport=_llm_transport(content)))
     facts = ex.extract("我投了字节跳动")
-    assert len(facts) == 1 and facts[0].object == "字节跳动"
+    # 谓词映射层的伴随补全：applied_to 自动带上 application_status:submitted
+    assert len(facts) == 2
+    assert facts[0].predicate == "applied_to" and facts[0].object == "字节跳动"
+    assert (facts[1].predicate, facts[1].object) == ("application_status", "字节跳动:submitted")
+    # 原始（未归一）事实留痕
+    assert len(ex.last_raw_facts) == 1 and ex.last_raw_facts[0].predicate == "applied_to"
 
 
 def test_openai_extractor_tolerates_bad_json():

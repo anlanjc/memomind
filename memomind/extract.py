@@ -6,8 +6,10 @@
   测试 / 评测 / 离线演示全部用它。领域限定"求职"，规则表覆盖：
   投递、流程状态、目标岗位、偏好、技能、在职、城市、撤销。
 - ``OpenAICompatibleExtractor``：httpx 调 OpenAI 兼容接口（默认 DashScope
-  兼容模式），要求模型返回严格 JSON；用于接真模型，评测口径不变
-  （把 RuleExtractor 换成本类，重跑同一条命令即可复现 README 流程）。
+  兼容模式），要求模型返回严格 JSON；输出再经 :mod:`memomind.normalize`
+  谓词映射层归一成规范谓词（LLM 抽取"语义对、命名歪"的系统化修复，见该
+  模块 docstring 与 evals/eval_set100_report.md）；用于接真模型，评测口径
+  不变（把 RuleExtractor 换成本类，重跑同一条命令即可复现 README 流程）。
 
 抽取只负责"说出事实"，**不判断**新旧与矛盾 —— 那是 ops 决策层的职责。
 """
@@ -21,6 +23,13 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from .llm import OpenAICompatibleClient
+from .normalize import (  # noqa: F401  再导出：别名表是两套抽取器的共享基础设施
+    COMPANY_ALIASES,
+    ROLE_VOCAB,
+    _norm_company,
+    is_company_like,
+    normalize_facts,
+)
 from .schema import ExtractedFact
 
 logger = logging.getLogger(__name__)
@@ -33,57 +42,12 @@ __all__ = [
     "is_question",
 ]
 
-# ---------------------------------------------------------------------------
-# 实体归一化：口语短称 -> 规范实体名。冲突消解依赖规范名，否则
-# "字节"和"字节跳动"会被当成两家公司，矛盾检测就失效了。
-# ---------------------------------------------------------------------------
-COMPANY_ALIASES: dict[str, str] = {
-    "字节": "字节跳动",
-    "阿里": "阿里巴巴",
-    "蚂蚁": "蚂蚁集团",
-    "腾讯": "腾讯",
-    "美团": "美团",
-    "快手": "快手",
-    "百度": "百度",
-    "京东": "京东",
-    "小红书": "小红书",
-    "拼多多": "拼多多",
-    "滴滴": "滴滴",
-    "网易": "网易",
-    "华为": "华为",
-    "米哈游": "米哈游",
-    "deepseek": "DeepSeek",
-}
-
 _QUESTION_MARKERS = re.compile(r"[?？]\s*$|什么|哪些|哪个|怎么|如何|多少|吗\s*[?？]?\s*$")
 
 
 def is_question(turn: str) -> bool:
     """RuleExtractor 的守门员：疑问句不抽事实（"我叫什么名字？"不是自我介绍）。"""
     return bool(_QUESTION_MARKERS.search(turn.strip()))
-
-
-def _norm_company(name: str) -> str:
-    """公司名归一化：剥掉粘连的岗位/申请后缀与"的"，再做别名映射。"""
-    name = re.sub(r"(?:\s*(?:Agent|大模型|后端|前端|算法|产品|数据|测试|运维|全栈|客户端|基础设施)"
-                  r"(?:工程师|开发|岗位|岗))+$", "", name.strip())
-    name = re.sub(r"(?:的?\s*(?:申请|投递|流程|岗位|简历|[Oo]ffer))+$", "", name)
-    name = name.rstrip("的").strip()
-    return COMPANY_ALIASES.get(name, COMPANY_ALIASES.get(name.lower(), name))
-
-
-# 岗位词表：投递规则的宾语若是岗位词而非公司名，判定为无效抽取
-ROLE_VOCAB = {
-    "Agent", "大模型", "后端", "前端", "算法", "产品", "数据", "测试",
-    "运维", "全栈", "客户端", "基础设施", "工程师", "开发",
-}
-
-
-def is_company_like(name: str) -> bool:
-    """归一化后是公司名（非岗位词、非空）才允许产出投递类事实。"""
-    if not name or name in ROLE_VOCAB:
-        return False
-    return True
 
 
 def _norm_role(role: str) -> str:
@@ -310,6 +274,8 @@ class OpenAICompatibleExtractor(BaseExtractor):
     """调用 OpenAI 兼容 /chat/completions 抽取事实（DashScope 兼容模式可用）。
 
     缺 API key 时抛 :class:`~memomind.llm.MissingLLMConfigError`。
+    输出经 :func:`~memomind.normalize.normalize_facts` 归一成规范谓词；
+    原始（未归一）事实保留在 ``last_raw_facts`` 供评测对比与审计。
     """
 
     name = "openai_compatible"
@@ -326,6 +292,7 @@ class OpenAICompatibleExtractor(BaseExtractor):
             base_url=base_url, api_key=api_key, model=model
         )
         self.temperature = temperature
+        self.last_raw_facts: list[ExtractedFact] = []
 
     def extract(
         self, turn: str, session_id: str = "", now: Optional[float] = None
@@ -333,7 +300,9 @@ class OpenAICompatibleExtractor(BaseExtractor):
         if not turn.strip():
             return []
         raw = self.client.chat(_EXTRACT_SYSTEM_PROMPT, turn, temperature=self.temperature)
-        return self._parse(raw)
+        facts = self._parse(raw)
+        self.last_raw_facts = facts
+        return normalize_facts(facts)
 
     @staticmethod
     def _parse(raw: str) -> list[ExtractedFact]:
