@@ -1,0 +1,8 @@
+{
+ "tokens_in": 12670,
+ "tokens_out": 19767,
+ "est_cost_yuan": 0.2879,
+ "calls": 50,
+ "price_assumption": "¥4.0/M in, ¥12.0/M out（保守上限）",
+ "updated_at": "2026-10-29T07:45:12"
+}

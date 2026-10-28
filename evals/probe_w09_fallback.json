@@ -1,0 +1,131 @@
+{
+ "text": "滴滴挂了",
+ "max_tries": 5,
+ "tries": [
+  {
+   "try_no": 1,
+   "llm_raw": [
+    [
+     "failed_at",
+     "滴滴"
+    ]
+   ],
+   "hybrid": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rule": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rescued": false,
+   "events": [],
+   "match": true
+  },
+  {
+   "try_no": 2,
+   "llm_raw": [
+    [
+     "failed_at",
+     "滴滴出行"
+    ]
+   ],
+   "hybrid": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rule": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rescued": false,
+   "events": [],
+   "match": true
+  },
+  {
+   "try_no": 3,
+   "llm_raw": [
+    [
+     "got_rejected_by",
+     "滴滴"
+    ]
+   ],
+   "hybrid": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rule": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rescued": false,
+   "events": [],
+   "match": true
+  },
+  {
+   "try_no": 4,
+   "llm_raw": [
+    [
+     "failed_at",
+     "滴滴出行"
+    ]
+   ],
+   "hybrid": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rule": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rescued": false,
+   "events": [],
+   "match": true
+  },
+  {
+   "try_no": 5,
+   "llm_raw": [
+    [
+     "failed_at",
+     "滴滴"
+    ]
+   ],
+   "hybrid": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rule": [
+    [
+     "application_status",
+     "滴滴:ended"
+    ]
+   ],
+   "rescued": false,
+   "events": [],
+   "match": true
+  }
+ ],
+ "summary": {
+  "rescued": 0,
+  "all_match": 5,
+  "total": 5
+ }
+}
