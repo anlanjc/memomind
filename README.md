@@ -52,7 +52,7 @@ retrieve(检索+touch) → render(注入块) → respond(应答) → extract(抽
 python -m venv .venv
 .venv/Scripts/python -m pip install -i https://pypi.org/simple/ -r requirements.txt
 
-# 测试（118 个，全 mock 无网络）
+# 测试（141 个，全 mock 无网络）
 .venv/Scripts/python -m pytest -q
 
 # 评测 v1（20 个脚本化跨会话场景，输出分维度正确率）
@@ -78,8 +78,12 @@ export MEMOMIND_LLM_MODEL="qwen-plus"
 ```
 
 设了 key，API 层自动切换为 LLM 抽取 + LLM 决策 + LLM 应答；不设则全确定性 mock。
-LLM 抽取输出经 `memomind/normalize.py` 谓词映射层归一成规范谓词
-（真模型对比 0/20→19/20 的修复，见 `evals/eval_set100_report.md`）。
+LLM 抽取外套 `HybridExtractor`（LLM 抽空时回退规则底线，开关默认开、事件留痕），
+输出再经 `memomind/normalize.py` 谓词映射层归一成规范谓词——真模型对比
+0/20→19/20（谓词映射）→**20/20**（混合空抽兜底+词典增量修订），见
+`evals/eval_set100_real_compare_v4.md`。LLM 决策器按 ADR-6 的分工边界运行：
+撤销/重复/低置信委托规则矩阵，LLM 裁决语义核心（真模型对比 70.5%→100%，
+见 `evals/real_ops_decider_report.md`）。
 
 ## 三、目录结构
 
@@ -89,8 +93,10 @@ memomind/
 │   ├── schema.py             # 数据模型：MemoryRecord / ExtractedFact / MemoryOp
 │   ├── store.py              # SQLite 存储 + FTS5 索引 + networkx 图视图
 │   ├── extract.py            # 事实抽取：RuleExtractor（确定性）+ OpenAICompatibleExtractor
+│   │                         #   + HybridExtractor（LLM 空抽回退规则底线，事件留痕）
 │   ├── normalize.py          # 谓词映射层：LLM 自由谓词/实体 -> 规范词典（确定性后处理）
 │   ├── ops.py                # ★ 操作决策：ADD/UPDATE/DELETE/NOOP 决策矩阵 + 冲突消解
+│   │                         #   LLMOpsDecider 结构分支委托矩阵（ADR-6）+ last_call_stats 留痕
 │   ├── retrieve.py           # 混合检索：FTS5 词面 + 意图映射 + 图邻域 + 时间衰减排序
 │   ├── decay.py              # 遗忘：过期归档 / 指数衰减 / compaction
 │   ├── chat.py               # 主循环：retrieve→注入→应答→extract→ops→store
@@ -100,7 +106,7 @@ memomind/
 ├── evals/
 │   ├── scenarios.py          # 20 个脚本化跨会话场景（5 维度 × 4）
 │   └── run_evals.py          # 评测执行器：分维度正确率 + --json
-├── tests/                    # 118 个 pytest（store/extract/normalize/ops/retrieve/decay/chat/api）
+├── tests/                    # 141 个 pytest（store/extract/normalize/ops/retrieve/decay/chat/api）
 ├── scripts/demo.py           # 3 个确定性演示会话
 ├── docs/TAKEOVER.md          # 接手指南：白板重写清单 / 必做实验 / 原创扩展
 ├── pyproject.toml
@@ -212,14 +218,15 @@ $ python -m evals.run_evals
 
 ```text
 $ python -m pytest -q
-118 passed in 2.60s
+141 passed in 2.50s
 ```
 
-测试分布：normalize 29（谓词词典/亚词兜底/极性修正/伴随补全/实体归一）、store 12
-（往返/FTS 同步/图时间有效性/持久化）、ops 14（决策矩阵全分支 + 同轮自洽 +
-LLM 决策器回退）、extract 11（规则确定性 + OpenAI 兼容 MockTransport + 缺 key
-异常）、transfer 11、retrieve 8（排序/衰减/意图/图扩展/预算）、decay 8、
-embedding 7、chat 6、api 6、schema 6。全 mock 无网络。
+测试分布：normalize 37（谓词词典/亚词兜底/极性修正/伴随补全/实体归一/失败类
+亚词状态）、ops 22（决策矩阵全分支 + 同轮自洽 + LLM 决策器回退 + 结构分支
+委托）、extract 18（规则确定性 + OpenAI 兼容 MockTransport + 混合空抽兜底 +
+缺 key 异常）、store 12（往返/FTS 同步/图时间有效性/持久化）、transfer 11、
+retrieve 8（排序/衰减/意图/图扩展/预算）、decay 8、embedding 7、chat 6、
+api 6、schema 6。全 mock 无网络。
 
 ## 六、与 Mem0 / Letta / Zep 的对比
 
@@ -231,7 +238,7 @@ embedding 7、chat 6、api 6、schema 6。全 mock 无网络。
 | 检索 | FTS5 词面 + 意图映射 + 图邻域 + 时间衰减 | 向量 + 关键词混合 | 关键词 + 嵌入检索 | 图遍历 + 余弦 + BM25 混合 |
 | 遗忘 | 三层：过期/衰减归档 + compaction GC | 弱（靠决策 DELETE） | 归档分层 | 边级时间有效性 |
 | 依赖 | sqlite3+networkx+fastapi，6 个直接依赖 | 向量库 + LLM 必选 | 较重 | Neo4j / FalkorDB 必选 |
-| 可测试性 | 全链路确定性 mock，118 测试 + 100 评测 | 依赖真模型，评测成本高 | 同左 | 同左 |
+| 可测试性 | 全链路确定性 mock，141 测试 + 100 评测 | 依赖真模型，评测成本高 | 同左 | 同左 |
 
 **取舍说明**：生产级系统里语义检索应该用 embedding（Mem0/Zep 路线），本项目刻意用
 "词面+意图映射+图邻域"把语义缺口补到"评测可断言"的程度，换来全链路确定性——

@@ -54,21 +54,28 @@
 | **mock v2（本次，`run_eval_set100.py`）** | 100 条 × 5 层，确定性管线 | **100/100 = 100%** |
 | **real v2（SM-1，`real_extract_compare.py` 历史版本）** | 20 条输入 RuleExtractor vs LLM 抽取，(predicate, object) 集合对比 | 完全一致 0/20——差异系统性：谓词命名 16/20、隐含状态 9/20、否定极性错挂 2/20、实体归一化分叉 1/20、真实误抽 1/20 |
 | **real v3（MM-2，谓词映射层落地后复测）** | 同 20 条、同模型、同 prompt（LLM 行为冻结），唯一变量=normalize.py 归一化层 | **完全一致 19/20 = 95%**（LLM 原始未归一对照仍 0/20——改进全部来自归一化层）；残差 1 条=LLM 抽取召回波动（W09 本轮空抽，前两轮同输入全匹配） |
-| 花费（real） | v2：20 次调用（client 不透出 usage，按 ~1k tokens/次估）est ≈¥0.1；v3：三轮 60 次调用 **usage 实记** 15,240 in + 20,161 out tokens | v3 **≈¥0.30**（上限 ¥0.5 未超，账本 `evals/.real_extract_ledger.json`） |
+| **real v4（MM-3，混合空抽兜底 + 词典增量修订）** | 同 20 条，唯一变量=HybridExtractor 兜底接线 + normalize 四条实测增量 | **完全一致 20/20 = 100%**（两轮 18/20→20/20；LLM 原始对照仍 0/20）；W09 空抽探针 10 次：空抽未复现、同输入 5 次产出 4 种谓词变体（词典盲区活体实证） |
+| **real 决策层（MM-3，LLMOpsDecider vs 规则矩阵）** | 180 决策点分层抽样 44 试样 + 9 合成语义探针，决策层单变量（抽取冻结为规则版） | raw **31/44=70.5%** → 结构分支委托后 **44/44=100%**（撤销复合动作/重复提及/低置信三类归因，ADR-6） |
+| 花费（real） | v2：20 次调用（client 不透出 usage，按 ~1k tokens/次估）est ≈¥0.1；v3：三轮 60 次调用 **usage 实记** 15,240 in + 20,161 out tokens；v4+探针：50 次调用 usage 实记；决策对比：176 次调用 usage 实记（phase1 与 phase2-4 两本账本） | v3 **≈¥0.30**（上限 ¥0.5）；v4 **¥0.29**（上限 ¥0.3）；决策对比 **¥0.69**（上限 ¥1，账本分列 .real_ops_ledger*.json） |
 
 pytest：SM-1 窗口 **89 passed**；MM-2 窗口 **118 passed**（normalize 层 29 项新测试
-+ 2 项 LLM 抽取器测试更新）；mock 100/100 两窗口均不变。
++ 2 项 LLM 抽取器测试更新）；MM-3 窗口 **141 passed**（hybrid 7 + normalize 增量
+8 + ops 统计/结构委托 8）；mock 100/100 三窗口均不变。
 
 ## 5. 复现命令
 
 ```bash
 cd memomind
-../.venv/Scripts/python.exe -m pytest -q                       # 118 passed
+../.venv/Scripts/python.exe -m pytest -q                       # 141 passed
 ../.venv/Scripts/python.exe evals/build_eval_set100.py         # 重新生成 JSON
 ../.venv/Scripts/python.exe evals/run_eval_set100.py           # mock 全量（应 100/100）
 ../.venv/Scripts/python.exe evals/run_eval_set100.py --verbose # 逐条细节
 ../.venv/Scripts/python.exe evals/real_extract_compare.py      # 真模型 20 条对比（需 key；
                                                                #   产物 *_v3.md，v2 版本见 git 历史）
+../.venv/Scripts/python.exe evals/real_extract_compare_v4.py   # v4：混合空抽兜底验收（20/20）
+../.venv/Scripts/python.exe evals/probe_w09_fallback.py        # W09 空抽/变体探针 ×5
+../.venv/Scripts/python.exe evals/real_ops_decider_compare.py --dry  # 决策对比抽样分布（不花钱）
+../.venv/Scripts/python.exe evals/real_ops_decider_compare.py        # 决策层真模型对比（44 试样）
 ```
 
 ## 6. 已知边界
@@ -116,3 +123,55 @@ v2 真实误抽（applied_to+岗位宾语→target_role，"改投"语义结构�
 
 **没做**：LLM 空抽的规则兜底（属于混合架构接线，非映射层职责）；决策层
 （LLMOpsDecider）真模型对比（前置已就绪，留给下一窗口）。
+
+## 8. MM-3 会话追加（2026-10-29）：空抽兜底混合架构接线 + LLMOpsDecider 真模型决策对比
+
+**做了**：MM-2 留下的两个窗口全部落地——①新增
+`memomind/extract.py::HybridExtractor`：LLM 抽取结果为空时回退 RuleExtractor
+（开关默认开、events 事件留痕 + rescued 标记 + logger.warning），api.py 真模型
+装配点默认接线；同一 20 条真模型复测 **19/20 → 20/20 = 100%**
+（`evals/eval_set100_real_compare_v4.md`，两轮：18/20 → 词典增量修订四条 → 20/20）。
+②LLMOpsDecider 真模型决策对比：180 个决策点（eval_set_100 复放）分层抽样
+44 试样 + 9 个合成语义探针，规则矩阵输出为基准，四轮
+**31/44=70.5% → 41/44 → 43/44 → 44/44=100%**（`evals/real_ops_decider_report.md`，
+分歧逐类归因），结论落 ADR-6：LLM 裁决语义核心（新增/矛盾/多值），
+撤销复合动作/重复提及置信算术/低置信策略阈值三类结构分支委托规则矩阵，
+last_call_stats 留痕可观测。
+
+**三个关键决策**
+1. **兜底做在抽取器组合层，归一化层不偷跑**：MM-2 红线"空抽兜底属混合
+   架构规则底线"——HybridExtractor 是独立包装器（组合任意 primary+fallback），
+   兜底只在"结果为空"时触发、LLM 非空但抽得少不混流（保持对比口径可归因）。
+2. **normalize.py 只做增量修订（红线内）**：四条全部来自本轮实测证据——
+   COMPANY_ALIASES+深度求索（LLM 把 deepseek 翻译成官方中文名）、
+   _fold_role 吸收"开发/工程师"嵌入缀（后端开发岗位→后端岗）、
+   prefers+岗位宾语→target_role、失败类亚词状态兜底（fail/reject→ended）；
+   抽取 prompt 与模型全程冻结。
+3. **决策层委托而不是修 prompt**：LLM 决策的三类系统性分歧根因是输出
+   schema 表达力（撤销=DELETE×N+ADD 复合动作表达不了，6/6 分歧）、策略配置
+   不可见（min_confidence）、置信度算术——都属结构语义不是判断力；确定性
+   分支预路由规则矩阵，LLM 保留 novel 事实的 E1/D1/D2 判断（132 次调用
+   零异常零回退）。
+
+**真实 bug（本窗口发现）**
+1. 评测装置快照污染：collect_trials 把快照直接交给规则决策器，strengthen 的
+   _advance_state 原位改写记录对象（0.85→0.93），规则与 LLM 看到不同状态——
+   单变量对比被破坏，修复=deepcopy 隔离。教训：**"两路输入相同"要靠机制保证**。
+2. 同一句"滴滴挂了"temperature=0 下 5 次调用产出 **4 种谓词变体**
+   （failed_at/was_rejected_by/failed_interview_at/failed_application，探针实测）
+   ——词典法必须配亚词兜底的活体实证（MM-2 结论的强化证据）。
+3. 空抽兜底本会话 50 次真模型调用零触发（W09 空抽未复现，LLM 波动本身波动）
+   ——机制证据=7 项回归测试（救回/双空/开关/不混流/事件累计/日志/管线接线），
+   诚实记录：活体救回样本为零。
+
+**结果**：pytest **141 全绿**（MM-2 基线 118 + 23 项新测试：hybrid 7/normalize
+增量 8/ops 统计与委托 8）；mock 评测 **100/100** 两轮复验不变；真模型抽取
+20/20；真模型决策对比 44/44（加固后口径，raw 70.5% 留档 phase1 rows）。
+花费：抽取 v4+探针 **¥0.29/¥0.3**（50 调用，.real_extract_ledger_v4.json）；
+决策对比 **¥0.69/¥1**（phase1 44 + phase2-4 132 调用，两本账本分列），
+全程 NO_PROXY=dashscope.aliyuncs.com + usage 实记。产物归档：v4 对比报告
++ round1 存档 + W09 探针 JSON + 决策对比报告四份（终版+phase1/2/3）。
+
+**没做**：LLM 空抽活体救回样本（10 次探针未复现空抽，机制由测试钉死）；
+LLM 决策器在 novel 事实上的语义误判样本（本窗口未出现，ADR-6 记录为
+持续观察面）；检索层/衰减层真模型对比（不在本窗口范围）。
