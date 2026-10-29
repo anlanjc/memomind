@@ -1,0 +1,3424 @@
+[
+ {
+  "sid": "A09",
+  "layer": "别名归一",
+  "title": "裸挂了短称归一",
+  "step_idx": 0,
+  "text": "字节挂了",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:ended",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "No existing memory for this user application status; adding as new fact."
+  ]
+ },
+ {
+  "sid": "A10",
+  "layer": "别名归一",
+  "title": "在职短称→短称 矛盾替代",
+  "step_idx": 0,
+  "text": "我现在在美团上班",
+  "facts": [
+   {
+    "predicate": "works_at",
+    "object": "美团",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实，无现有记忆冲突。"
+  ]
+ },
+ {
+  "sid": "A11",
+  "layer": "别名归一",
+  "title": "全称→全称 在职更替",
+  "step_idx": 0,
+  "text": "我在网易工作",
+  "facts": [
+   {
+    "predicate": "works_at",
+    "object": "网易",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "网易"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "网易"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "新事实，用户工作单位信息为空，直接添加"
+  ]
+ },
+ {
+  "sid": "A12",
+  "layer": "别名归一",
+  "title": "面试邀请短称归一",
+  "step_idx": 0,
+  "text": "收到蚂蚁的面试邀请",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "蚂蚁集团:interviewing",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:interviewing"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:interviewing"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "候选事实为全新事实，现有记忆中无相关内容。"
+  ]
+ },
+ {
+  "sid": "A15",
+  "layer": "别名归一",
+  "title": "offer 短称归一",
+  "step_idx": 0,
+  "text": "收到字节的offer",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:offer",
+    "confidence": 0.98,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:offer"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:offer"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "无现有记忆，新增用户获得字节跳动 offer 的状态事实。"
+  ]
+ },
+ {
+  "sid": "A18",
+  "layer": "别名归一",
+  "title": "在职记忆意图召回",
+  "step_idx": 0,
+  "text": "我在华为工作",
+  "facts": [
+   {
+    "predicate": "works_at",
+    "object": "华为",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "华为"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "works_at",
+     "华为"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户工作单位信息新增，现有记忆中不存在该事实"
+  ]
+ },
+ {
+  "sid": "A01",
+  "layer": "别名归一",
+  "title": "字节→字节跳动 归一后状态替代",
+  "step_idx": 0,
+  "text": "我投了字节",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实：用户申请了字节跳动",
+   "全新事实：用户对字节跳动的申请状态为已提交"
+  ]
+ },
+ {
+  "sid": "A02",
+  "layer": "别名归一",
+  "title": "阿里巴巴→阿里 撤销命中",
+  "step_idx": 0,
+  "text": "我投了阿里巴巴",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "New fact: user applied to Alibaba, no existing memory conflicts.",
+   "New fact: application status is submitted for Alibaba, no existing memory conflicts."
+  ]
+ },
+ {
+  "sid": "A03",
+  "layer": "别名归一",
+  "title": "蚂蚁→蚂蚁集团",
+  "step_idx": 0,
+  "text": "我投了蚂蚁",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "蚂蚁集团",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "蚂蚁集团:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "蚂蚁集团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "蚂蚁集团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请蚂蚁集团，新事实",
+   "用户申请状态为已提交，新事实"
+  ]
+ },
+ {
+  "sid": "A04",
+  "layer": "别名归一",
+  "title": "岗位后缀剥离 字节的Agent岗→字节跳动",
+  "step_idx": 0,
+  "text": "我投了字节的Agent岗",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请字节跳动，该信息不在现有记忆中，作为新事实添加。",
+   "用户对字节跳动的申请状态为已提交，该信息不在现有记忆中，作为新事实添加。"
+  ]
+ },
+ {
+  "sid": "A05",
+  "layer": "别名归一",
+  "title": "小写 deepseek→DeepSeek",
+  "step_idx": 0,
+  "text": "投了deepseek",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "DeepSeek",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "DeepSeek:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "DeepSeek"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "DeepSeek:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "DeepSeek"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "DeepSeek:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "New fact: user applied to DeepSeek",
+   "New fact: user's application status is submitted"
+  ]
+ },
+ {
+  "sid": "A06",
+  "layer": "别名归一",
+  "title": "同公司短称/全称状态接续",
+  "step_idx": 0,
+  "text": "我投了快手",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "快手",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "快手:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 2,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实：用户申请了快手",
+   "全新事实：快手的申请状态为已提交"
+  ]
+ },
+ {
+  "sid": "M02",
+  "layer": "多跳召回",
+  "title": "问技能召回全部技能（意图映射）",
+  "step_idx": 0,
+  "text": "我熟悉 Python、FastAPI 和 MySQL",
+  "facts": [
+   {
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.85,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "uses",
+    "object": "FastAPI",
+    "confidence": 0.85,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "uses",
+    "object": "MySQL",
+    "confidence": 0.85,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "FastAPI"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "MySQL"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "FastAPI"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "MySQL"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 3,
+   "mode": "llm",
+   "decisions": 3,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实，用户使用Python",
+   "全新事实，用户使用FastAPI",
+   "全新事实，用户使用MySQL"
+  ]
+ },
+ {
+  "sid": "M10",
+  "layer": "多跳召回",
+  "title": "多轮穿插后仍召回姓名",
+  "step_idx": 0,
+  "text": "我叫王芳，我投了腾讯",
+  "facts": [
+   {
+    "predicate": "name",
+    "object": "王芳",
+    "confidence": 0.99,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "name",
+     "王芳"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "name",
+     "王芳"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 3,
+   "mode": "llm",
+   "decisions": 3,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实，用户姓名为王芳",
+   "全新事实，用户申请了腾讯",
+   "全新事实，申请状态为已提交"
+  ]
+ },
+ {
+  "sid": "U15",
+  "layer": "事实更新",
+  "title": "一次报三个技能（多值谓词各落一条）",
+  "step_idx": 0,
+  "text": "我熟悉 Python、FastAPI 和 MySQL",
+  "facts": [
+   {
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.85,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "uses",
+    "object": "FastAPI",
+    "confidence": 0.85,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "uses",
+    "object": "MySQL",
+    "confidence": 0.85,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "FastAPI"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "MySQL"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "FastAPI"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "uses",
+     "MySQL"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 3,
+   "mode": "llm",
+   "decisions": 3,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户使用Python，为全新事实",
+   "用户使用FastAPI，为全新事实",
+   "用户使用MySQL，为全新事实"
+  ]
+ },
+ {
+  "sid": "A08",
+  "layer": "别名归一",
+  "title": "一句投两家 短称归一",
+  "step_idx": 0,
+  "text": "我投了阿里和字节",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请阿里巴巴，属于新事实",
+   "阿里巴巴申请状态为已提交，是新增信息",
+   "用户申请字节跳动，属于新事实",
+   "字节跳动申请状态为已提交，是新增信息"
+  ]
+ },
+ {
+  "sid": "A19",
+  "layer": "别名归一",
+  "title": "两家短称投递撤一家",
+  "step_idx": 0,
+  "text": "我投了字节和阿里",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "字节跳动"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "全新事实：用户申请了字节跳动",
+   "全新事实：字节跳动申请状态为已提交",
+   "全新事实：用户申请了阿里巴巴",
+   "全新事实：阿里巴巴申请状态为已提交"
+  ]
+ },
+ {
+  "sid": "M06",
+  "layer": "多跳召回",
+  "title": "问投递召回三家公司",
+  "step_idx": 0,
+  "text": "我投了腾讯和阿里",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请腾讯，新事实",
+   "腾讯申请状态为已提交，新事实",
+   "用户申请阿里巴巴，新事实",
+   "阿里巴巴申请状态为已提交，新事实"
+  ]
+ },
+ {
+  "sid": "U10",
+  "layer": "事实更新",
+  "title": "一次投两家 美团和快手（多值并存）",
+  "step_idx": 0,
+  "text": "我投了美团和快手",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "美团:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "快手",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "快手:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请美团，新信息",
+   "美团申请状态为已提交，新信息",
+   "用户申请快手，新信息",
+   "快手申请状态为已提交，新信息"
+  ]
+ },
+ {
+  "sid": "W06",
+  "layer": "冲突撤回",
+  "title": "撤回两家投递中的一家（另一家不受影响）",
+  "step_idx": 0,
+  "text": "我投了美团和快手",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "美团:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "快手",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "快手:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请了美团，这是全新事实。",
+   "美团的申请状态为已提交，这是全新事实。",
+   "用户申请了快手，这是全新事实。",
+   "快手的申请状态为已提交，这是全新事实。"
+  ]
+ },
+ {
+  "sid": "W15",
+  "layer": "冲突撤回",
+  "title": "三家公司只挂一家（其余不受影响）",
+  "step_idx": 0,
+  "text": "我投了腾讯和阿里",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 4,
+   "mode": "llm",
+   "decisions": 4,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户申请腾讯，全新事实",
+   "腾讯申请状态为已提交，全新事实",
+   "用户申请阿里巴巴，全新事实",
+   "阿里巴巴申请状态为已提交，全新事实"
+  ]
+ },
+ {
+  "sid": "S-A0",
+  "layer": "合成-语义探针",
+  "title": "低置信丢弃：一条0.2置信的偏好",
+  "step_idx": 0,
+  "text": "（合成）低置信丢弃：一条0.2置信的偏好",
+  "facts": [
+   {
+    "predicate": "prefers",
+    "object": "远程办公",
+    "confidence": 0.2,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_ops": [
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_lowconf": 1
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "低置信度(0.20)，丢弃"
+  ]
+ },
+ {
+  "sid": "S-B2",
+  "layer": "合成-语义探针",
+  "title": "完全重复同置信：已投美团(0.9)，再投美团(0.9)",
+  "step_idx": 0,
+  "text": "（合成）完全重复同置信：已投美团(0.9)，再投美团(0.9)",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "r1",
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_ops": [
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 1
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "完全重复，跳过"
+  ]
+ },
+ {
+  "sid": "A14",
+  "layer": "别名归一",
+  "title": "全称/短称重复投递（归一后同一事实）",
+  "step_idx": 1,
+  "text": "我投了字节",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "200c3c5a803a4c37a14b40ae31aa1bfc",
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9
+   },
+   {
+    "id": "e7ebe9040c2f43cb8fa1c2bb0aa74ac8",
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 2
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "完全重复，跳过",
+   "完全重复，跳过"
+  ]
+ },
+ {
+  "sid": "U09",
+  "layer": "事实更新",
+  "title": "完全重复投递（B2 NOOP 不落重复记忆）",
+  "step_idx": 1,
+  "text": "我投了腾讯",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "49613927d07549d38affd8e694b8187f",
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9
+   },
+   {
+    "id": "528b7957ff5a42f291bd63bcba9afa0a",
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 2
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "完全重复，跳过",
+   "完全重复，跳过"
+  ]
+ },
+ {
+  "sid": "U14",
+  "layer": "事实更新",
+  "title": "同一公司两种说法重复投递（归一后 B2 NOOP）",
+  "step_idx": 1,
+  "text": "我投了字节",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "8b70f28576634c02ace18f674913c2cb",
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "b1b827689c094005874d46bac863c0fe",
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_ops": [
+   [
+    "NOOP"
+   ],
+   [
+    "NOOP"
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 2
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "完全重复，跳过",
+   "完全重复，跳过"
+  ]
+ },
+ {
+  "sid": "S-B1",
+  "layer": "合成-语义探针",
+  "title": "重复提及且置信更高：已投美团(0.9)，再投美团(0.95)",
+  "step_idx": 0,
+  "text": "（合成）重复提及且置信更高：已投美团(0.9)，再投美团(0.95)",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "r1",
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 1
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "重复提及，合并强化置信度"
+  ]
+ },
+ {
+  "sid": "S-B1S",
+  "layer": "合成-语义探针",
+  "title": "技能重复强化：已会Python(0.8)，再说熟悉Python(0.85)",
+  "step_idx": 0,
+  "text": "（合成）技能重复强化：已会Python(0.8)，再说熟悉Python(0.85)",
+  "facts": [
+   {
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.85,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "r1",
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.8
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 1
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "重复提及，合并强化置信度"
+  ]
+ },
+ {
+  "sid": "U08",
+  "layer": "事实更新",
+  "title": "重复技能 熟悉→掌握（B1 强化而非新增）",
+  "step_idx": 1,
+  "text": "我掌握 Python",
+  "facts": [
+   {
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.88,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "b8bebe7be5054db994dbec0e07c97cce",
+    "predicate": "uses",
+    "object": "Python",
+    "confidence": 0.85
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "strengthen",
+    [
+     "user",
+     "uses",
+     "Python"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 0,
+   "delegated_update": 0,
+   "delegated_repeat": 1
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "重复提及，合并强化置信度"
+  ]
+ },
+ {
+  "sid": "A01",
+  "layer": "别名归一",
+  "title": "字节→字节跳动 归一后状态替代",
+  "step_idx": 1,
+  "text": "字节跳动的流程结束了",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:ended",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "3ec04618ec9b4e1680c8c8950567c2d8",
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9
+   },
+   {
+    "id": "c4eeb741837e4c8ab428adef043ba733",
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "新事实表明字节跳动应聘状态已从submitted变为ended，应更新原状态记忆。"
+  ]
+ },
+ {
+  "sid": "A03",
+  "layer": "别名归一",
+  "title": "蚂蚁→蚂蚁集团",
+  "step_idx": 1,
+  "text": "蚂蚁的流程结束了",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "蚂蚁集团:ended",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "16edf7800a4545e1af01e8877541a74f",
+    "predicate": "application_status",
+    "object": "蚂蚁集团:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "7a5fa395d9cb459490a087b66102c465",
+    "predicate": "applied_to",
+    "object": "蚂蚁集团",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:ended"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "蚂蚁集团:ended"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "Latest status indicates application ended, supersedes previous submitted status with higher confidence."
+  ]
+ },
+ {
+  "sid": "A06",
+  "layer": "别名归一",
+  "title": "同公司短称/全称状态接续",
+  "step_idx": 1,
+  "text": "收到快手的面试邀请",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "快手:interviewing",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "24ac5b79dad8422d8dbca8eabdd7f323",
+    "predicate": "applied_to",
+    "object": "快手",
+    "confidence": 0.9
+   },
+   {
+    "id": "b0e2f3a3560f4e31acd2fc012f6f0617",
+    "predicate": "application_status",
+    "object": "快手:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "快手:interviewing"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "快手:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "快手:interviewing"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "用户对快手的申请状态从 submitted 更新为 interviewing，以新状态覆盖旧状态。"
+  ]
+ },
+ {
+  "sid": "A10",
+  "layer": "别名归一",
+  "title": "在职短称→短称 矛盾替代",
+  "step_idx": 1,
+  "text": "我现在在字节上班",
+  "facts": [
+   {
+    "predicate": "works_at",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "57f3cc71a51b46cca683d80c59178b44",
+    "predicate": "works_at",
+    "object": "美团",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "works_at",
+     "美团"
+    ],
+    [
+     "user",
+     "works_at",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "works_at",
+     "美团"
+    ],
+    [
+     "user",
+     "works_at",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "New fact indicates user works at ByteDance, contradicting existing memory that user works at Meituan; new fact takes precedence."
+  ]
+ },
+ {
+  "sid": "A11",
+  "layer": "别名归一",
+  "title": "全称→全称 在职更替",
+  "step_idx": 1,
+  "text": "我在字节跳动工作",
+  "facts": [
+   {
+    "predicate": "works_at",
+    "object": "字节跳动",
+    "confidence": 0.9,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "60a769861f204694a3db3f462eca620f",
+    "predicate": "works_at",
+    "object": "网易",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "works_at",
+     "网易"
+    ],
+    [
+     "user",
+     "works_at",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "works_at",
+     "网易"
+    ],
+    [
+     "user",
+     "works_at",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "新记忆表明用户现在在字节跳动工作，与旧记忆（网易）存在冲突，新事实生效并取代旧记忆。"
+  ]
+ },
+ {
+  "sid": "A17",
+  "layer": "别名归一",
+  "title": "全称投递→短称挂了",
+  "step_idx": 1,
+  "text": "字节挂了",
+  "facts": [
+   {
+    "predicate": "application_status",
+    "object": "字节跳动:ended",
+    "confidence": 0.95,
+    "polarity": "positive"
+   }
+  ],
+  "existing": [
+   {
+    "id": "3b53de03bf534f1991cac52fcaf6aa93",
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "c92f321de13641298974a42500e1d5c8",
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "UPDATE",
+    "supersede",
+    [
+     "user",
+     "application_status",
+     "字节跳动:submitted"
+    ],
+    [
+     "user",
+     "application_status",
+     "字节跳动:ended"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 0,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "新事实表明字节跳动申请状态已从submitted变为ended，应用新状态并标记旧记忆为已取代。"
+  ]
+ },
+ {
+  "sid": "A13",
+  "layer": "别名归一",
+  "title": "不想投短称→归一撤销",
+  "step_idx": 0,
+  "text": "不想投字节了",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "字节跳动",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "字节跳动"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销意图（无对应记忆），留档"
+  ]
+ },
+ {
+  "sid": "W04",
+  "layer": "冲突撤回",
+  "title": "无中生有的撤销（撤销意图留档）",
+  "step_idx": 0,
+  "text": "不想投腾讯了",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "腾讯",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销意图（无对应记忆），留档"
+  ]
+ },
+ {
+  "sid": "W11",
+  "layer": "冲突撤回",
+  "title": "重复撤销同一公司（C1 无去重，重复留档）",
+  "step_idx": 2,
+  "text": "不想投京东了",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "京东",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "a4ca2a4fcd254f898cb7e3b46add651e",
+    "predicate": "withdrawn",
+    "object": "京东",
+    "confidence": 0.95
+   }
+  ],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "京东"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "京东"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销意图（无对应记忆），留档"
+  ]
+ },
+ {
+  "sid": "A02",
+  "layer": "别名归一",
+  "title": "阿里巴巴→阿里 撤销命中",
+  "step_idx": 1,
+  "text": "取消阿里的申请",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "阿里巴巴",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "3741729e07e745c59d1c30861797e38f",
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "a808fe34168949e591e77d0e3f5ef74b",
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销：失效 user application_status 阿里巴巴:submitted",
+   "撤销：失效 user applied_to 阿里巴巴",
+   "撤销事实留档（审计可查）"
+  ]
+ },
+ {
+  "sid": "A19",
+  "layer": "别名归一",
+  "title": "两家短称投递撤一家",
+  "step_idx": 1,
+  "text": "取消阿里的申请",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "阿里巴巴",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "2c190dcfb9e4479994b456f234a13eb3",
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9
+   },
+   {
+    "id": "4d2e47e1484d4bb8b5625074a767001e",
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "542ebc9e949a499cac21fb8311f6c96d",
+    "predicate": "applied_to",
+    "object": "字节跳动",
+    "confidence": 0.9
+   },
+   {
+    "id": "f12a07dd9e624e82b373d09789fd5277",
+    "predicate": "application_status",
+    "object": "字节跳动:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销：失效 user applied_to 阿里巴巴",
+   "撤销：失效 user application_status 阿里巴巴:submitted",
+   "撤销事实留档（审计可查）"
+  ]
+ },
+ {
+  "sid": "D09",
+  "layer": "时序衰减",
+  "title": "被撤销的投递超保留期 → compaction 清除",
+  "step_idx": 1,
+  "text": "取消腾讯的申请",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "腾讯",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "5a8a0d3b0e654d00b273931f3661f630",
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "b3b4d6a5309642d685cc7d5d217ad33d",
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销：失效 user application_status 腾讯:submitted",
+   "撤销：失效 user applied_to 腾讯",
+   "撤销事实留档（审计可查）"
+  ]
+ },
+ {
+  "sid": "M12",
+  "layer": "多跳召回",
+  "title": "撤回后投递记忆不再被召回",
+  "step_idx": 1,
+  "text": "取消阿里的申请",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "阿里巴巴",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "8b33ecacd34849eeb0bbcd4f5ac821e1",
+    "predicate": "application_status",
+    "object": "阿里巴巴:submitted",
+    "confidence": 0.9
+   },
+   {
+    "id": "c5415a88352d4c27ac73d224598a8dba",
+    "predicate": "applied_to",
+    "object": "阿里巴巴",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "阿里巴巴:submitted"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "阿里巴巴"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "阿里巴巴"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销：失效 user application_status 阿里巴巴:submitted",
+   "撤销：失效 user applied_to 阿里巴巴",
+   "撤销事实留档（审计可查）"
+  ]
+ },
+ {
+  "sid": "S-C1M",
+  "layer": "合成-语义探针",
+  "title": "撤销命中两条：已投美团+已提交，再说取消美团申请",
+  "step_idx": 0,
+  "text": "（合成）撤销命中两条：已投美团+已提交，再说取消美团申请",
+  "facts": [
+   {
+    "predicate": "withdrawn",
+    "object": "美团",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "r1",
+    "predicate": "applied_to",
+    "object": "美团",
+    "confidence": 0.9
+   },
+   {
+    "id": "r2",
+    "predicate": "application_status",
+    "object": "美团:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "美团"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "美团:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "美团"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 1,
+   "mode": "llm",
+   "decisions": 0,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "撤销：失效 user applied_to 美团",
+   "撤销：失效 user application_status 美团:submitted",
+   "撤销事实留档（审计可查）"
+  ]
+ },
+ {
+  "sid": "S-MIX",
+  "layer": "合成-语义探针",
+  "title": "混合批：新投快手+同时取消腾讯（腾讯在库）",
+  "step_idx": 0,
+  "text": "（合成）混合批：新投快手+同时取消腾讯（腾讯在库）",
+  "facts": [
+   {
+    "predicate": "applied_to",
+    "object": "快手",
+    "confidence": 0.9,
+    "polarity": "positive"
+   },
+   {
+    "predicate": "withdrawn",
+    "object": "腾讯",
+    "confidence": 0.95,
+    "polarity": "negative"
+   }
+  ],
+  "existing": [
+   {
+    "id": "r1",
+    "predicate": "applied_to",
+    "object": "腾讯",
+    "confidence": 0.9
+   },
+   {
+    "id": "r2",
+    "predicate": "application_status",
+    "object": "腾讯:submitted",
+    "confidence": 0.9
+   }
+  ],
+  "rule_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_ops": [
+   [
+    "ADD",
+    [
+     "user",
+     "applied_to",
+     "快手"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "applied_to",
+     "腾讯"
+    ]
+   ],
+   [
+    "DELETE",
+    [
+     "user",
+     "application_status",
+     "腾讯:submitted"
+    ]
+   ],
+   [
+    "ADD",
+    [
+     "user",
+     "withdrawn",
+     "腾讯"
+    ]
+   ]
+  ],
+  "llm_stats": {
+   "facts": 2,
+   "mode": "llm",
+   "decisions": 1,
+   "delegated_retraction": 1,
+   "delegated_update": 0
+  },
+  "fallback_fired": false,
+  "exact_match": true,
+  "multiset_match": true,
+  "divergence": [],
+  "llm_reasons": [
+   "New fact: user applied to 快手, not present in existing memories.",
+   "撤销：失效 user applied_to 腾讯",
+   "撤销：失效 user application_status 腾讯:submitted",
+   "撤销事实留档（审计可查）"
+  ]
+ }
+]
