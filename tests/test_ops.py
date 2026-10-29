@@ -162,3 +162,136 @@ def test_unknown_predicate_defaults_to_per_object(decider: RuleOpsDecider):
     )
     assert ops[0].op == OP_ADD  # 不误杀
     assert policy.scope_of("自定义谓词") == "per_object"
+
+
+# -- LLMOpsDecider 调用统计（事件留痕，MM-3）----------------------------------
+def test_llm_decider_stats_normal_path():
+    client = OpenAICompatibleClient(
+        base_url="http://test", api_key="k", model="m",
+        transport=_transport_returning(
+            '{"decisions":[{"index":0,"op":"ADD","target_id":null,"reason":"新"}]}'
+        ),
+    )
+    d = LLMOpsDecider(client)
+    d.decide([fact(p="applied_to", o="字节跳动")], [])
+    assert d.last_call_stats["mode"] == "llm"
+    assert d.last_call_stats["facts"] == 1
+    assert d.last_call_stats["decisions"] == 1
+    assert d.last_call_stats["delegated_update"] == 0
+    assert d.last_call_stats["delegated_retraction"] == 0
+
+
+def test_llm_decider_stats_update_without_target():
+    client = OpenAICompatibleClient(
+        base_url="http://test", api_key="k", model="m",
+        transport=_transport_returning(
+            '{"decisions":[{"index":0,"op":"UPDATE","target_id":null,"reason":"更新"}]}'
+        ),
+    )
+    d = LLMOpsDecider(client)
+    d.decide([fact(o="Agent岗")], [mk_rec(obj="后端岗")])
+    assert d.last_call_stats["delegated_update"] == 1
+
+
+# -- 结构性分支委托规则版（ADR-6：真模型对比发现的系统性分歧）------------------
+def test_llm_decider_update_on_exact_triple_delegates():
+    # 同三元组重复提及（更高置信）：预路由规则版产出 B1 strengthen，
+    # 不进 LLM（真模型对重复提及摇摆于 UPDATE/NOOP 且做不了置信度算术）
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+
+    client = OpenAICompatibleClient(base_url="http://test", api_key="k", model="m",
+                                    transport=httpx.MockTransport(handler))
+    d = LLMOpsDecider(client)
+    ops = d.decide([ExtractedFact("user", "applied_to", "美团", "application", 0.95)],
+                   [mk_rec(predicate="applied_to", obj="美团", conf=0.9)])
+    assert calls == []  # 重复提及零 LLM 调用
+    assert ops[0].op == OP_UPDATE and ops[0].update_kind == "strengthen"
+    assert d.last_call_stats["delegated_repeat"] == 1
+
+
+def test_llm_decider_exact_repeat_same_conf_is_noop():
+    # 同三元组同置信（B2）：预路由后规则版判 NOOP，与矩阵一致
+    client = OpenAICompatibleClient(
+        base_url="http://test", api_key="k", model="m",
+        transport=_transport_returning("should-not-be-called"),
+    )
+    d = LLMOpsDecider(client)
+    ops = d.decide([ExtractedFact("user", "applied_to", "美团", "application", 0.9)],
+                   [mk_rec(predicate="applied_to", obj="美团", conf=0.9)])
+    assert ops[0].op == OP_NOOP
+
+
+def test_llm_decider_retraction_delegates_without_llm_call():
+    # 撤销事实是 DELETE(逐条)+ADD(留档) 复合动作，LLM 输出 schema 表达不了
+    # （真模型 6/6 分歧）——整体委托规则版，不发起 LLM 调用
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+
+    client = OpenAICompatibleClient(base_url="http://test", api_key="k", model="m",
+                                    transport=httpx.MockTransport(handler))
+    d = LLMOpsDecider(client)
+    old1 = mk_rec(predicate="applied_to", obj="美团", rec_id="r1")
+    old2 = mk_rec(predicate="application_status", obj="美团:submitted", rec_id="r2")
+    ops = d.decide([ExtractedFact("user", "withdrawn", "美团", "application",
+                                  0.95, polarity="negative")], [old1, old2])
+    assert calls == []  # 撤销分支零 LLM 调用
+    assert [op.op for op in ops] == [OP_DELETE, OP_DELETE, OP_ADD]
+    assert d.last_call_stats["delegated_retraction"] == 1
+    assert d.last_call_stats["mode"] == "llm"
+
+
+def test_llm_decider_mixed_batch_routes_by_polarity():
+    # 混合批：正极性事实走 LLM（ADD），撤销事实走规则（DELETE+ADD 留档）
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert '"index": 0' in request.read().decode()  # 载荷只含正极性事实
+        return httpx.Response(200, json={"choices": [{"message": {"content":
+            '{"decisions":[{"index":0,"op":"ADD","target_id":null,"reason":"新投递"}]}'
+        }}]})
+
+    client = OpenAICompatibleClient(base_url="http://test", api_key="k", model="m",
+                                    transport=httpx.MockTransport(handler))
+    d = LLMOpsDecider(client)
+    existing = [mk_rec(predicate="applied_to", obj="腾讯", rec_id="r1"),
+                mk_rec(predicate="application_status", obj="腾讯:submitted", rec_id="r2")]
+    ops = d.decide([ExtractedFact("user", "applied_to", "快手", "application", 0.9),
+                    ExtractedFact("user", "withdrawn", "腾讯", "application",
+                                  0.95, polarity="negative")], existing)
+    kinds = [op.op for op in ops]
+    assert kinds.count(OP_ADD) == 2   # LLM 的快手 ADD + 规则的撤销留档 ADD
+    assert kinds.count(OP_DELETE) == 2  # 腾讯的两条旧记忆失效
+    assert d.last_call_stats["delegated_retraction"] == 1
+
+
+def test_llm_decider_stats_fallback_error():
+    client = OpenAICompatibleClient(
+        base_url="http://test", api_key="k", model="m",
+        transport=_transport_returning("这不是 JSON"),
+    )
+    d = LLMOpsDecider(client)
+    d.decide([fact(o="Agent岗")], [mk_rec(obj="后端岗")])
+    assert d.last_call_stats["mode"] == "fallback_error"
+
+
+def test_llm_decider_lowconf_delegates_without_llm_call():
+    # A0 丢弃线是可配置策略阈值（min_confidence），LLM 不知道该配置
+    # （真模型把 0.2 置信判 ADD）——预路由规则版丢弃，不进 LLM
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+
+    client = OpenAICompatibleClient(base_url="http://test", api_key="k", model="m",
+                                    transport=httpx.MockTransport(handler))
+    d = LLMOpsDecider(client)
+    ops = d.decide([ExtractedFact("user", "prefers", "远程办公", "preference", 0.2)], [])
+    assert calls == []
+    assert ops[0].op == OP_NOOP and "低置信" in ops[0].reason
+    assert d.last_call_stats["delegated_lowconf"] == 1

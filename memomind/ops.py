@@ -281,7 +281,24 @@ class RuleOpsDecider:
 
 
 class LLMOpsDecider:
-    """LLM 版决策器：把候选事实与现有记忆交给模型裁决，异常回退规则决策器。"""
+    """LLM 版决策器：把候选事实与现有记忆交给模型裁决，异常回退规则决策器。
+
+    分工边界（ADR-6，44 试样真模型对比的结论）：LLM 负责正极性新事实的
+    语义判断（新增/矛盾替代/无价值跳过），**结构性分支委托规则版**——
+
+    - 低置信事实（conf < min_confidence）：A0 丢弃线是可配置的策略阈值，
+      LLM 不知道该配置且真模型会把 0.2 置信的事实判 ADD（44 试样 1 条）——
+      预路由规则版。
+    - 同三元组重复提及：矩阵 B1/B2 的 strengthen/NOOP 由置信度算术决定，
+      LLM 无从得知且真模型运行间摇摆于 UPDATE/NOOP（44 试样两轮各 1-2 条
+      分歧）——进 LLM 前预路由规则版。
+    - 撤销事实（polarity=negative）：矩阵的 C1 分支是 DELETE(逐条目标)+ADD(留档)
+      的复合动作，LLM 的输出 schema（每条事实一个动作）表达不了，
+      真模型对比 6/6 分歧——整体委托规则版，且动作置于批内最后
+      （"先投后撤"终态与矩阵一致）。
+
+    任何异常（网络/解析）都回退到规则决策器——决策层永远不能"挂掉"。
+    """
 
     name = "llm"
 
@@ -297,6 +314,10 @@ class LLMOpsDecider:
     def __init__(self, client, fallback: Optional[RuleOpsDecider] = None) -> None:
         self.client = client
         self.fallback = fallback or RuleOpsDecider()
+        # 最近一次 decide 的调用统计（事件留痕，可观测；不影响决策行为）：
+        # mode=llm 正常 / fallback_error 异常回退；delegated_* 记录结构性
+        # 分支委托规则版的条数（撤销 / UPDATE 指向同三元组 / UPDATE 未指目标）。
+        self.last_call_stats: dict = {}
 
     def decide(
         self,
@@ -306,6 +327,53 @@ class LLMOpsDecider:
     ) -> list[MemoryOp]:
         if not facts:
             return []
+        stats = {"facts": len(facts), "mode": "llm", "decisions": 0,
+                 "delegated_retraction": 0, "delegated_update": 0}
+        self.last_call_stats = stats
+
+        # 结构性分支委托规则版（ADR-6，真模型对比的系统性分歧结论）：
+        # 1) 低置信：A0 丢弃线是可配置策略阈值，LLM 不知道该配置——预路由；
+        # 2) 同三元组重复提及：B1/B2 的 strengthen/NOOP 由置信度算术决定
+        #    （LLM 无从得知且真模型运行间摇摆于 UPDATE/NOOP）——预路由；
+        # 3) 撤销事实：C1 分支是 DELETE(逐条目标)+ADD(留档) 复合动作，LLM 的
+        #    输出 schema（每条事实一个动作）表达不了——整体委托规则版，
+        #    且动作置于最后，保证同一批"先投后撤"的终态与规则矩阵一致。
+        min_conf = self.fallback.min_confidence
+        retraction: list[ExtractedFact] = []
+        lowconf: list[ExtractedFact] = []
+        repeat: list[ExtractedFact] = []
+        novel: list[ExtractedFact] = []
+        for f in facts:
+            if f.polarity == "negative" or f.predicate in RETRACT_PREDICATES:
+                retraction.append(f)
+            elif f.confidence < min_conf:
+                lowconf.append(f)
+            elif any((r.subject, r.predicate, r.object) == f.triple_key
+                     for r in existing):
+                repeat.append(f)
+            else:
+                novel.append(f)
+        ops: list[MemoryOp] = []
+        if novel:
+            ops.extend(self._decide_llm(novel, existing, now, stats))
+        if repeat:
+            stats["delegated_repeat"] = len(repeat)
+            ops.extend(self.fallback.decide(repeat, existing, now))
+        if lowconf:
+            stats["delegated_lowconf"] = len(lowconf)
+            ops.extend(self.fallback.decide(lowconf, existing, now))
+        if retraction:
+            stats["delegated_retraction"] = len(retraction)
+            ops.extend(self.fallback.decide(retraction, existing, now))
+        return ops
+
+    def _decide_llm(
+        self,
+        facts: list[ExtractedFact],
+        existing: list[MemoryRecord],
+        now: Optional[float],
+        stats: dict,
+    ) -> list[MemoryOp]:
         payload = {
             "candidate_facts": [
                 {
@@ -338,6 +406,7 @@ class LLMOpsDecider:
                 text = re.sub(r"^```[a-zA-Z]*\s*|\s*```$", "", text).strip()
             data = json.loads(text)
             decisions = data["decisions"]
+            stats["decisions"] = len(decisions)
             ops: list[MemoryOp] = []
             for d in decisions:
                 i = int(d["index"])
@@ -348,6 +417,8 @@ class LLMOpsDecider:
                 tid = d.get("target_id")
                 if op == "UPDATE" and not tid:
                     # LLM 没指目标 -> 交给规则版定位，保证 UPDATE 语义完整
+                    # （同三元组重复已在预路由阶段分流，这里只剩矛盾 UPDATE）
+                    stats["delegated_update"] += 1
                     ops.extend(self.fallback.decide([f], existing, now))
                     continue
                 ops.append(
@@ -361,5 +432,6 @@ class LLMOpsDecider:
                 )
             return ops
         except Exception:  # noqa: BLE001 - 决策层永不失败，回退规则版
+            stats["mode"] = "fallback_error"
             logger.exception("LLM 决策失败，回退规则决策器")
             return self.fallback.decide(facts, existing, now)
