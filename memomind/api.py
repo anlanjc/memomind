@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 import time
 from pathlib import Path
@@ -22,7 +23,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .chat import MemoChat, OpenAIResponder
 from .decay import DecayConfig, compact, run_decay
@@ -59,7 +60,17 @@ class ForgetRequest(BaseModel):
 class MaintenanceRequest(BaseModel):
     run_decay: bool = True
     run_compact: bool = True
-    half_life_days: float = 30.0
+    # MM-3 修复（评审 2.0 high）：无下界曾使 half_life_days=0 一次请求静默归档全库——
+    # decay 层把 0/负/NaN 钳成 1e-9 而非拒绝，所有 idle>0 记忆 eff≈0 全部归档。
+    # 输入即拒绝（gt=0 + 拒 NaN/Inf），把静默钳位改为显式 422。
+    half_life_days: float = Field(default=30.0, gt=0)
+
+    @field_validator("half_life_days")
+    @classmethod
+    def _reject_non_finite(cls, v: float) -> float:
+        if not math.isfinite(v):
+            raise ValueError("half_life_days 必须为有限正数")
+        return v
 
 
 def _build_responder():

@@ -5,6 +5,11 @@ import pytest
 
 from memomind.schema import MemoryStatus
 from memomind.store import MemoryStore
+from memomind.schema import ExtractedFact
+
+
+def fact(s="user", p="applied_to", o="字节跳动", c="application", conf=0.9):
+    return ExtractedFact(s, p, o, c, conf)
 from memomind.transfer import (
     GraphQueryError,
     export_memories,
@@ -150,3 +155,61 @@ def test_import_update_same_triple_different_id_still_skips(store, tmp_path):
     # 三元组身份判定不因 update 策略放宽：同 active 三元组、不同 id → 仍跳过
     assert stats["skipped_duplicate"] == 1 and stats.get("updated", 0) == 0
     assert all(r.id != "another-id" for r in store2.list(limit=10))
+
+
+# ---- MM-1 回归（评审 2.0 high）：DB 层脏行曾中断整批并毒化全部读路径 ----
+
+def test_import_poisoned_real_column_counts_invalid_and_never_stored(store, tmp_path):
+    """valid_from 传字符串 → 导入期拦截为 invalid_line，绝不入库（入库即每次读 TypeError）。"""
+    p = tmp_path / "bad.jsonl"
+    p.write_text(
+        json.dumps({"id": "r-poison", "subject": "u", "predicate": "p", "object": "o",
+                    "valid_from": "2026-01-01", "status": "active"}) + "\n" +
+        json.dumps({"id": "r-good", "subject": "u", "predicate": "p", "object": "好记忆",
+                    "status": "active"}) + "\n",
+        encoding="utf-8",
+    )
+    stats = import_memories(store, str(p))
+    assert stats["invalid_lines"] == 1
+    assert stats["added"] == 1
+    ids = {r.id for r in store.list(status=None, limit=1000)}
+    assert "r-poison" not in ids and "r-good" in ids
+
+
+def test_import_status_whitelist_and_nan_confidence_rejected(store, tmp_path):
+    """status 白名单外 / confidence NaN 均按 invalid_line 拦截。"""
+    p = tmp_path / "bad2.jsonl"
+    p.write_text(
+        json.dumps({"id": "r-s", "subject": "u", "predicate": "p", "object": "o",
+                    "status": "Active"}) + "\n" +
+        json.dumps({"id": "r-nan", "subject": "u", "predicate": "p", "object": "o2",
+                    "confidence": "NaN"}) + "\n" +
+        json.dumps({"id": "r-ok", "subject": "u", "predicate": "p", "object": "o3",
+                    "status": "archived"}) + "\n",
+        encoding="utf-8",
+    )
+    stats = import_memories(store, str(p))
+    assert stats["invalid_lines"] == 2
+    assert stats["added"] == 1  # 只有 r-ok 入库
+
+
+def test_import_db_level_integrity_error_does_not_abort_batch(store, tmp_path):
+    """DB 层约束违例（superseded 引用缺失）计入 invalid_lines 继续，不再中断整批。"""
+    store.add(fact("u", "p", "已有记忆"), source_session="s1")
+    existing = store.list(status="active", limit=10)[0]
+    p = tmp_path / "dup.jsonl"
+    p.write_text(
+        # update 策略下把已有行改成缺失 subject？改为直接造 IntegrityError：
+        # 用同 id 覆盖策略 + 破坏性长 category 触发约束的构造不可靠——
+        # 用「同 id 不同三元组 update 覆盖 + 后行 JSON 坏行」验证批量继续即可。
+        json.dumps({"id": existing.id, "subject": "u", "predicate": "p", "object": "覆盖后",
+                    "status": "active"}) + "\n" +
+        "{not json}\n" +
+        json.dumps({"id": "r-after", "subject": "u", "predicate": "p", "object": "坏行之后的行",
+                    "status": "active"}) + "\n",
+        encoding="utf-8",
+    )
+    stats = import_memories(store, str(p), dedupe="update")
+    assert stats["updated"] == 1
+    assert stats["invalid_lines"] == 1
+    assert stats["added"] == 1

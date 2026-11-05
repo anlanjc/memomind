@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import re
 import sqlite3
 import time
@@ -131,12 +132,38 @@ class MemoryStore:
         self.db_path = db_path
         self.clock = clock
         # check_same_thread=False：FastAPI 线程池会跨线程访问同一连接。
-        # 本项目为单写者场景（SQLite 文件锁本身兜底），安全。
+        # MM-5 勘误（评审 2.0）：文件锁不约束进程内共享连接，「单写者=安全」表述已删——
+        # 写路径竞态待 MM-5 加锁修复，此处先如实不再断言安全。
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA foreign_keys=ON")
+        self.conn.execute("PRAGMA busy_timeout=5000")  # MM-2 修复：写锁等待而非立即 OperationalError
+        self._in_txn = False  # MM-2：批级事务抑制内部写方法的逐个 commit
         self._fts_mode = fts_tokenizer_mode(self.conn)
         self._init_schema()
+
+    @contextlib.contextmanager
+    def transaction(self):
+        """MM-2 修复（评审 2.0 high）：批级显式事务——内部写方法的 commit 被抑制，
+        退出时统一提交；异常回滚整批。supersede 的「旧封口+新落库」由此原子化，
+        中途失败不再永久丢记忆。"""
+        if self.conn.in_transaction:
+            self.conn.commit()  # 先收尾隐式事务，避免 BEGIN 撞车
+        self._in_txn = True
+        try:
+            self.conn.execute("BEGIN IMMEDIATE")
+            yield
+        except BaseException:
+            self.conn.rollback()
+            raise
+        else:
+            self.conn.commit()
+        finally:
+            self._in_txn = False
+
+    def _commit(self) -> None:
+        if not self._in_txn:
+            self.conn.commit()
 
     # -- schema ------------------------------------------------------------
     def _init_schema(self) -> None:
@@ -239,7 +266,7 @@ class MemoryStore:
                 rec.source_session, rec.created_at, rec.last_accessed,
             ),
         )
-        self.conn.commit()
+        self._commit()
         return rec
 
     def touch(self, memory_id: str, now: Optional[float] = None) -> None:
@@ -248,13 +275,13 @@ class MemoryStore:
         self.conn.execute(
             "UPDATE memory SET last_accessed = ? WHERE id = ?", (now, memory_id)
         )
-        self.conn.commit()
+        self._commit()
 
     def set_confidence(self, memory_id: str, confidence: float) -> None:
         self.conn.execute(
             "UPDATE memory SET confidence = ? WHERE id = ?", (confidence, memory_id)
         )
-        self.conn.commit()
+        self._commit()
 
     def set_status(
         self,
@@ -274,42 +301,48 @@ class MemoryStore:
             "UPDATE memory SET status = ?, valid_to = ? WHERE id = ?",
             (status, valid_to, memory_id),
         )
-        self.conn.commit()
+        self._commit()
 
     def hard_delete(self, memory_id: str) -> None:
         """物理删除（仅 compaction 使用；AFTER DELETE 触发器同步 FTS）。"""
         self.conn.execute("DELETE FROM memory WHERE id = ?", (memory_id,))
-        self.conn.commit()
+        self._commit()
 
     def apply_ops(
         self, ops: Iterable[MemoryOp], source_session: str = "", now: Optional[float] = None
     ) -> list[dict]:
-        """执行操作决策层的一批决策，返回执行日志（供 API / demo 展示）。"""
+        """执行操作决策层的一批决策，返回执行日志（供 API / demo 展示）。
+
+        MM-2 修复（评审 2.0 high）：整批显式事务（BEGIN IMMEDIATE…COMMIT，异常回滚）——
+        此前逐动作独立提交零回滚，supersede 中途失败（如 confidence='高' 触发
+        ValueError）曾永久丢记忆。
+        """
         now = self.clock() if now is None else now
         log: list[dict] = []
-        for op in ops:
-            entry = {"op": op.op, "reason": op.reason, "update_kind": op.update_kind}
-            if op.op == "ADD" and op.fact is not None:
-                rec = self.add(op.fact, source_session=source_session, now=now)
-                entry["memory_id"] = rec.id
-                entry["memory"] = rec.to_dict()
-            elif op.op == "UPDATE":
-                if op.update_kind == "strengthen" and op.target_id:
-                    if op.confidence is not None:
-                        self.set_confidence(op.target_id, op.confidence)
-                    self.touch(op.target_id, now)
+        with self.transaction():
+            for op in ops:
+                entry = {"op": op.op, "reason": op.reason, "update_kind": op.update_kind}
+                if op.op == "ADD" and op.fact is not None:
+                    rec = self.add(op.fact, source_session=source_session, now=now)
+                    entry["memory_id"] = rec.id
+                    entry["memory"] = rec.to_dict()
+                elif op.op == "UPDATE":
+                    if op.update_kind == "strengthen" and op.target_id:
+                        if op.confidence is not None:
+                            self.set_confidence(op.target_id, op.confidence)
+                        self.touch(op.target_id, now)
+                        entry["memory_id"] = op.target_id
+                    elif op.update_kind == "supersede":
+                        if op.target_id:
+                            self.set_status(op.target_id, MemoryStatus.SUPERSEDED.value, now)
+                        if op.fact is not None:
+                            rec = self.add(op.fact, source_session=source_session, now=now)
+                            entry["memory_id"] = rec.id
+                            entry["memory"] = rec.to_dict()
+                elif op.op == "DELETE" and op.target_id:
+                    self.set_status(op.target_id, MemoryStatus.SUPERSEDED.value, now)
                     entry["memory_id"] = op.target_id
-                elif op.update_kind == "supersede":
-                    if op.target_id:
-                        self.set_status(op.target_id, MemoryStatus.SUPERSEDED.value, now)
-                    if op.fact is not None:
-                        rec = self.add(op.fact, source_session=source_session, now=now)
-                        entry["memory_id"] = rec.id
-                        entry["memory"] = rec.to_dict()
-            elif op.op == "DELETE" and op.target_id:
-                self.set_status(op.target_id, MemoryStatus.SUPERSEDED.value, now)
-                entry["memory_id"] = op.target_id
-            log.append(entry)
+                log.append(entry)
         return log
 
     # -- 读 ------------------------------------------------------------------

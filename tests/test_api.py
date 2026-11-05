@@ -79,3 +79,25 @@ def test_maintenance_and_static_page(client: TestClient):
     page = client.get("/")
     assert page.status_code == 200
     assert "memomind 记忆浏览器" in page.text
+
+
+# ---- MM-3 回归（评审 2.0 high）：half_life_days 无下界曾一次请求静默归档全库 ----
+
+def test_maintenance_half_life_days_rejects_non_positive(client: TestClient):
+    """0 / 负数 / NaN 必须 422（此前 0 会把除刚 touch 外的全部记忆静默归档）。"""
+    client.post("/chat", json={"session_id": "s1", "message": "我投了字节跳动"})
+    for bad in (0, -1, "NaN"):
+        r = client.post("/maintenance", json={"run_decay": True, "run_compact": False,
+                                              "half_life_days": bad})
+        assert r.status_code == 422, f"half_life_days={bad!r} 应 422"
+
+
+def test_maintenance_zero_half_life_leaves_memories_active(client: TestClient):
+    """语义回归锁：非法半衰期被拒后，任何记忆不得被归档。"""
+    client.post("/chat", json={"session_id": "s1", "message": "我投了字节跳动"})
+    client.post("/maintenance", json={"run_decay": True, "run_compact": False,
+                                      "half_life_days": 0})
+    data = client.get("/memories").json()
+    assert data["count"] > 0
+    for m in data["memories"]:
+        assert m["status"] == "active"

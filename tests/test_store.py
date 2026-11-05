@@ -137,3 +137,47 @@ def test_search_text_status_filters_all_or_groups(store: MemoryStore):
     objs = [r.object for r in hits]
     assert "字节跳动:ended" in objs
     assert "字节跳动:interviewing" not in objs
+
+
+# ---- MM-2 回归（评审 2.0 high）：apply_ops 曾逐动作独立提交零回滚 ----
+
+def test_apply_ops_supersede_midway_failure_rolls_back(store: MemoryStore):
+    """supersede 两段式（旧封口+新落库）中途炸掉 → 整批回滚，旧记忆不被永久封口。"""
+    from memomind.ops import OP_ADD, OP_UPDATE
+    from memomind.schema import MemoryOp
+
+    rec = store.add(fact("user", "applied_to", "字节跳动"), source_session="s1")
+    # 旧记忆封口（supersede）后 add 阶段炸：confidence='高' 曾静默丢掉整批
+    bad_fact = fact("user", "applied_to", "阿里巴巴", conf="高")
+    ops = [
+        MemoryOp(OP_UPDATE, reason="矛盾替代", update_kind="supersede",
+                 target_id=rec.id, fact=fact("user", "applied_to", "阿里巴巴")),
+        MemoryOp(OP_ADD, reason="后续新事实", fact=bad_fact),
+    ]
+    import pytest
+
+    with pytest.raises((TypeError, ValueError)):
+        store.apply_ops(ops, source_session="s2")
+    # 回滚后：旧记忆仍是 active（没有被永久封口）
+    got = store.get(rec.id)
+    assert got is not None and got.status == "active"
+    # 阿里巴巴的行也没有半途落库
+    rows = store.list(status="active", limit=100)
+    assert all(r.object != "阿里巴巴" for r in rows)
+
+
+def test_apply_ops_happy_path_still_commits(store: MemoryStore):
+    """事务化不改变正常路径语义：批内动作批后全部可见。"""
+    from memomind.ops import OP_ADD, OP_UPDATE
+    from memomind.schema import MemoryOp
+
+    rec = store.add(fact("user", "applied_to", "字节跳动"), source_session="s1")
+    ops = [
+        MemoryOp(OP_UPDATE, reason="矛盾替代", update_kind="supersede",
+                 target_id=rec.id, fact=fact("user", "applied_to", "阿里巴巴")),
+        MemoryOp(OP_ADD, reason="新事实", fact=fact("user", "offers_from", "美团")),
+    ]
+    store.apply_ops(ops, source_session="s2")
+    assert store.get(rec.id).status == "superseded"
+    objects = {r.object for r in store.list(status="active", limit=100)}
+    assert "阿里巴巴" in objects and "美团" in objects

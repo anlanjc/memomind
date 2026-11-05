@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import json
+import math
+import sqlite3
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Optional
@@ -54,6 +56,18 @@ def import_memories(store: MemoryStore, path: str | Path, now: Optional[float] =
     existing_triples = {(r.subject, r.predicate, r.object)
                         for r in store.list(status=MemoryStatus.ACTIVE.value, limit=100000)}
     stats = {"added": 0, "skipped_duplicate": 0, "invalid_lines": 0}
+    _status_whitelist = {s.value for s in MemoryStatus}
+
+    def _as_float(value: Any, field: str) -> Any:
+        # MM-1 修复：REAL 列吃进字符串会让每次读路径（float 比 str）抛 TypeError——
+        # 导入期显式 coerce，坏值按 invalid_line 拦截而非入库毒化。
+        if value is None:
+            return None
+        v = float(value)
+        if not math.isfinite(v):
+            raise ValueError(f"{field} 非有限数: {value!r}")
+        return v
+
     with Path(path).open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
@@ -61,15 +75,24 @@ def import_memories(store: MemoryStore, path: str | Path, now: Optional[float] =
                 continue
             try:
                 d = json.loads(line)
+                status = d.get("status", MemoryStatus.ACTIVE.value)
+                if status not in _status_whitelist:
+                    raise ValueError(f"status 非法: {status!r}")
                 rec = MemoryRecord(
                     id=d["id"], subject=d["subject"], predicate=d["predicate"],
                     object=d["object"], category=d.get("category", ""),
                     confidence=float(d.get("confidence", 0.5)),
-                    valid_from=d.get("valid_from"), valid_to=d.get("valid_to"),
-                    status=d.get("status", MemoryStatus.ACTIVE.value),
+                    # valid_from 为 NOT NULL 列（store.add 恒填创建时刻）——导入缺省=now，
+                    # 缺失曾直接触发 IntegrityError 中断整批（评审 2.0 MM-1 场景之一）
+                    valid_from=_as_float(d.get("valid_from", now), "valid_from"),
+                    valid_to=_as_float(d.get("valid_to"), "valid_to"),
+                    status=status,
                     source_session=d.get("source_session", ""),
-                    created_at=d.get("created_at", now), last_accessed=d.get("last_accessed", now),
+                    created_at=_as_float(d.get("created_at", now), "created_at"),
+                    last_accessed=_as_float(d.get("last_accessed", now), "last_accessed"),
                 )
+                if not math.isfinite(rec.confidence):
+                    raise ValueError(f"confidence 非有限数: {d.get('confidence')!r}")
             except (KeyError, ValueError, TypeError, json.JSONDecodeError):
                 stats["invalid_lines"] += 1
                 continue
@@ -80,27 +103,42 @@ def import_memories(store: MemoryStore, path: str | Path, now: Optional[float] =
                     stats["skipped_duplicate"] += 1
                     continue
                 # 评审边界补全：update 策略=整行覆盖（显式 DELETE+INSERT 触发 FTS 同步）
-                store.conn.execute("DELETE FROM memory WHERE id = ?", (rec.id,))
-                store.conn.execute(
-                    f"INSERT INTO memory ({','.join(_COLS)}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                    tuple(getattr(rec, c) for c in _COLS),
-                )
-                store.conn.commit()
+                try:
+                    store.conn.execute("DELETE FROM memory WHERE id = ?", (rec.id,))
+                    store.conn.execute(
+                        f"INSERT INTO memory ({','.join(_COLS)}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                        tuple(getattr(rec, c) for c in _COLS),
+                    )
+                except sqlite3.Error:
+                    # MM-1 修复：DB 层脏行（完整性/约束类）同样计入 invalid_lines 继续，
+                    # 兑现「坏一行不拖垮整批」契约——此前 IntegrityError 中断整批且不回滚。
+                    stats["invalid_lines"] += 1
+                    continue
                 stats["updated"] = stats.get("updated", 0) + 1
                 existing_triples.add(triple) if rec.status == MemoryStatus.ACTIVE.value else None
                 continue
             if rec.status == MemoryStatus.ACTIVE.value and triple in existing_triples:
                 stats["skipped_duplicate"] += 1
                 continue
-            store.conn.execute(
-                f"INSERT INTO memory ({','.join(_COLS)}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                tuple(getattr(rec, c) for c in _COLS),
-            )
-            store.conn.commit()
+            try:
+                store.conn.execute(
+                    f"INSERT INTO memory ({','.join(_COLS)}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                    tuple(getattr(rec, c) for c in _COLS),
+                )
+            except sqlite3.Error:
+                stats["invalid_lines"] += 1
+                continue
             existing_ids.add(rec.id)
             if rec.status == MemoryStatus.ACTIVE.value:
                 existing_triples.add(triple)
             stats["added"] += 1
+    # MM-1 修复：整批单事务——循环内不再逐行 commit，结尾统一提交（异常时回滚整批，
+    # 避免半批入库的中间态）；坏行已在上层按 invalid_lines 剔除，不影响本事务。
+    try:
+        store.conn.commit()
+    except sqlite3.Error:
+        store.conn.rollback()
+        raise
     return stats
 
 
