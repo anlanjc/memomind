@@ -5,6 +5,20 @@
 > 业务场景定为"求职记忆助理"：跨会话记住投递进展、面试反馈、简历偏好，并做记忆合并 /
 > 冲突消解 / 过期衰减。
 
+[![CI](https://github.com/anlanjc/memomind/actions/workflows/ci.yml/badge.svg)](https://github.com/anlanjc/memomind/actions/workflows/ci.yml) [![tests](https://img.shields.io/badge/pytest-141%20passed-brightgreen)]() [![eval](https://img.shields.io/badge/评测集-100%20条-brightgreen)]() [![deps](https://img.shields.io/badge/依赖-不依赖%20mem0%2FLetta-blue)]()
+
+## 架构总览
+
+```mermaid
+flowchart LR
+    D[对话流] --> EX{{HybridExtractor 抽取<br/>规则+LLM 混合·空抽兜底}}
+    EX --> OP{{操作决策<br/>LLMOpsDecider}}
+    OP --> ST[(存储层<br/>networkx 图 + SQLite FTS)]
+    ST --> RET{{混合检索<br/>谓词映射层 95%}}
+    RET --> DEC{{遗忘/衰减<br/>置信度公式}}
+    ST --> TR[可移植层<br/>导出/导入/图查询 DSL]
+```
+
 本项目是我准备 2027 寒假 Agent 应用开发实习的第三个作品（同工作区还有 policy-compass、askbi）。
 选题直接对齐 2026 年 9-10 月的面试真题：字节一面"Agent 的记忆机制"、字节番茄"为何三层记忆？
 长期记忆怎么保证正确？"、小红书"长/短期记忆底层实现"、腾讯 JD 原文"记忆的抽取、存储、检索、
