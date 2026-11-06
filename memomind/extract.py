@@ -371,7 +371,14 @@ class HybridExtractor(BaseExtractor):
     def extract(
         self, turn: str, session_id: str = "", now: Optional[float] = None
     ) -> list[ExtractedFact]:
-        facts = self.primary.extract(turn, session_id, now)
+        # MM-6 修复（评审 2.0）：兜底条件曾只认「结果为空」——primary 抛异常（网络
+        # RST/超时，本机有 OpenSSL RST 前科）直接穿透 500，本轮事实连规则抽取都没
+        # 执行，用户陈述丢失。扩为「为空或抛异常」→ 回退规则抽取（不破坏非空不混流归因）。
+        try:
+            facts = self.primary.extract(turn, session_id, now)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("LLM 抽取异常（%s: %s），回退规则抽取", type(exc).__name__, exc)
+            facts = []
         if facts or not self.enabled:
             return facts
         rescued = self.fallback.extract(turn, session_id, now)

@@ -52,9 +52,11 @@ def test_retriever_semantic_rerank_changes_order(tmp_path):
     embed_top = with_embed.retrieve(q, now=1000.0)
     # 两个版本都应召回 applied_to（词面命中）；语义重排不得丢失结果
     assert base_top and embed_top
-    assert {e.record.predicate for e in embed_top} <= {e.record.predicate for e in base_top} or True
+    assert {e.record.predicate for e in embed_top} <= {e.record.predicate for e in base_top}
     # 关键断言：带 embedder 时结果非空且含 applied_to（重排不丢召回）
     assert any(e.record.predicate == "applied_to" for e in embed_top)
+    # MM-9 回归：重排必须真实生效——分数融合后与 base 分数不再逐位相同
+    assert [e.score for e in embed_top] != [e.score for e in base_top]
 
 
 def test_retriever_no_embedder_unchanged(tmp_path):

@@ -83,6 +83,13 @@ def test_maintenance_and_static_page(client: TestClient):
 
 # ---- MM-3 回归（评审 2.0 high）：half_life_days 无下界曾一次请求静默归档全库 ----
 
+def test_chat_session_id_charset_rejected(client: TestClient):
+    """MM-4 纵深：session_id 字符集白名单（曾仅限长度，<img onerror> 经 source_session 透出）。"""
+    r = client.post("/chat", json={"session_id": "<img src=x onerror=alert(1)>",
+                                   "message": "我投了字节跳动"})
+    assert r.status_code == 422
+
+
 def test_maintenance_half_life_days_rejects_non_positive(client: TestClient):
     """0 / 负数 / NaN 必须 422（此前 0 会把除刚 touch 外的全部记忆静默归档）。"""
     client.post("/chat", json={"session_id": "s1", "message": "我投了字节跳动"})

@@ -165,104 +165,18 @@ def _parse_query(expr: str) -> list[dict[str, Any]]:
         if not node:
             raise GraphQueryError(f"第 {i + 1} 跳缺少起点实体：{expr!r}")
         nxt = hops[i + 1]
+        # MM-8 修复（评审 2.0）：终点曾取整段 hop——"A -> B -uses-> C" 的第 2 跳
+        # obj 会拿到 "B -uses"，恒不等于节点 "B"，合法查询静默空结果。
+        # 终点复用与当前跳相同的 ' -' 剥离逻辑。
+        nxt_node = nxt.partition(" -")[0].strip() if " -" in nxt else nxt
         segs.append({
             "subj": None if node == "*" else node,
             "pred": None if pred in (None, "", "*") else pred,
-            "obj": None if nxt == "*" else nxt,
+            "obj": None if nxt_node == "*" else nxt_node,
         })
     return segs
 
 
-def graph_query(store: MemoryStore, expr: str, now: Optional[float] = None) -> list[str]:
-    """在记忆图上执行 DSL 查询，返回人读的结果行（带谓词与置信度）。
-
-    示例：
-      graph_query(store, "李雷 -target_role-> *")
-      graph_query(store, "* -applied_to-> 字节跳动")
-      graph_query(store, "李雷 -> * -> *")          # 两跳任意关系
-    """
-    segs = _parse_query(expr)
-    g = store.graph(now)
-
-    def _pred_match(want: Optional[str], actual: str) -> bool:
-        # 实体域谓词在图中形如 "application_status:流程结束"——前缀匹配
-        return want is None or actual == want or actual.startswith(want + ":")
-
-    results: list[str] = []
-    seen: set[tuple] = set()
-
-    def walk(node: str, seg_idx: int, path: list[str]) -> None:
-        if seg_idx == len(segs):
-            key = tuple(path)
-            if key not in seen:
-                seen.add(key)
-                results.append("  ".join(path))
-            return
-        seg = segs[seg_idx]
-        if seg["subj"] is not None and seg["subj"] != node:
-            return
-        for _, nxt, data in g.out_edges(node, data=True):
-            if seg["obj"] is not None and nxt != seg["obj"]:
-                continue
-            if seg["pred"] is not None and not _pred_match(seg["pred"], data.get("predicate", "")):
-                continue
-            walk(nxt, seg_idx + 1,
-                 path + [f"{node} -[{data.get('predicate')}|{data.get('confidence', 0):.2f}]-> {nxt}"])
-
-    starts = segs[0]["subj"]
-    if starts is None:
-        for n in list(g.nodes)[:500]:  # 全图通配给上限，防大图全遍历
-            walk(n, 0, [])
-    else:
-        if starts not in g:
-            return []
-        walk(starts, 0, [])
-    return results
-def graph_query(store: MemoryStore, expr: str, now: Optional[float] = None) -> list[str]:
-    """在记忆图上执行 DSL 查询，返回人读的结果行（带谓词与置信度）。
-
-    示例：
-      graph_query(store, "李雷 -target_role-> *")
-      graph_query(store, "* -applied_to-> 字节跳动")
-      graph_query(store, "李雷 -> * -> *")          # 两跳任意关系
-    """
-    segs = _parse_query(expr)
-    g = store.graph(now)
-
-    def _pred_match(want: Optional[str], actual: str) -> bool:
-        # 实体域谓词在图中形如 "application_status:流程结束"——前缀匹配
-        return want is None or actual == want or actual.startswith(want + ":")
-
-    results: list[str] = []
-    seen: set[tuple] = set()
-
-    def walk(node: str, seg_idx: int, path: list[str]) -> None:
-        if seg_idx == len(segs):
-            key = tuple(path)
-            if key not in seen:
-                seen.add(key)
-                results.append("  ".join(path))
-            return
-        seg = segs[seg_idx]
-        if seg["subj"] is not None and seg["subj"] != node:
-            return
-        for _, nxt, data in g.out_edges(node, data=True):
-            if seg["obj"] is not None and nxt != seg["obj"]:
-                continue
-            if seg["pred"] is not None and not _pred_match(seg["pred"], data.get("predicate", "")):
-                continue
-            walk(nxt, seg_idx + 1,
-                 path + [f"{node} -[{data.get('predicate')}|{data.get('confidence', 0):.2f}]-> {nxt}"])
-
-    starts = segs[0]["subj"]
-    if starts is None:
-        for n in list(g.nodes)[:500]:  # 全图通配给上限，防大图全遍历
-            walk(n, 0, [])
-    else:
-        if starts not in g:
-            return []
-        walk(starts, 0, [])
-    return results
 def graph_query(store: MemoryStore, expr: str, now: Optional[float] = None) -> list[str]:
     """在记忆图上执行 DSL 查询，返回人读的结果行（带谓词与置信度）。
 

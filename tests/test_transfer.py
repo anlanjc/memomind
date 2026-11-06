@@ -213,3 +213,22 @@ def test_import_db_level_integrity_error_does_not_abort_batch(store, tmp_path):
     assert stats["updated"] == 1
     assert stats["invalid_lines"] == 1
     assert stats["added"] == 1
+
+
+# ---- MM-8 回归（评审 2.0）：第 2+ 跳谓词曾污染前一跳终点匹配，合法查询静默空结果 ----
+
+def test_graph_query_second_hop_with_predicate(store):
+    """'A -> B -uses-> C'（第 2 跳带谓词，符合文档语法）应命中路径而非空。"""
+    store.add(fact("user", "applied_to", "字节跳动"), source_session="s1")
+    store.add(fact("字节跳动", "uses", "FastAPI"), source_session="s1")
+    rows = graph_query(store, "user -> 字节跳动 -uses-> FastAPI")
+    assert rows, "第 2 跳带谓词的合法查询曾恒空"
+    assert any("FastAPI" in r for r in rows)
+
+
+def test_graph_query_wildcard_second_hop_with_predicate(store):
+    """通配终点 + 第 2 跳谓词：'* -uses-> *' 中段谓词过滤同样不受污染。"""
+    store.add(fact("user", "applied_to", "字节跳动"), source_session="s1")
+    store.add(fact("字节跳动", "uses", "FastAPI"), source_session="s1")
+    rows = graph_query(store, "user -> 字节跳动 -uses-> *")
+    assert rows and any("FastAPI" in r for r in rows)

@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Optional
@@ -77,7 +78,8 @@ class MemoChat:
     ) -> None:
         self.store = store
         self.extractor = extractor
-        self.ops_decider = ops_decider or RuleOpsDecider()
+        self.ops_decider = ops_decider
+        self._write_lock = threading.Lock()  # MM-5：快照-决策-apply 临界区 or RuleOpsDecider()
         self.retriever = retriever or Retriever(store, clock=clock)
         self.responder = responder or MockResponder()
         self.clock = clock or time.time
@@ -90,18 +92,20 @@ class MemoChat:
         memory_block = self.retriever.render_block(scored, now)
         memories_used = [e.record for e in scored]
 
-        # 3) 应答
-        reply = self.responder.respond(session_id, text, memory_block)
+        # 3) 应答（MM-6 修复：真模型 responder 异常降级为本地文案留痕，不再 500 丢本轮）
+        try:
+            reply = self.responder.respond(session_id, text, memory_block)
+        except Exception as exc:  # noqa: BLE001
+            reply = f"（应答模型暂不可用：{type(exc).__name__}）已收到你的消息，记忆链路照常处理。"
 
-        # 4) 抽取
-        facts = self.extractor.extract(text, session_id, now)
-
-        # 5) 决策（对照当前 active 快照）
-        existing = self.store.list_active(now)
-        ops = self.ops_decider.decide(facts, existing, now)
-
-        # 6) 落库
-        ops_log = self.store.apply_ops(ops, source_session=session_id, now=now)
+        # 4)~6) 抽取→决策→落库（MM-5 修复：快照-决策-apply 曾全程无锁，双标签并发
+        # 「投后端」/「改前端」会各判 ADD 永久并存矛盾记忆，决策矩阵 D1 被绕过——
+        # 写临界区串行化，正确性优先；并发吞吐优化与 MM-7 一起做）
+        with self._write_lock:
+            facts = self.extractor.extract(text, session_id, now)
+            existing = self.store.list_active(now)
+            ops = self.ops_decider.decide(facts, existing, now)
+            ops_log = self.store.apply_ops(ops, source_session=session_id, now=now)
 
         return ChatResult(
             session_id=session_id,

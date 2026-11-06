@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import math
+import threading
 import os
 import time
 from pathlib import Path
@@ -41,7 +42,8 @@ _STATIC_DIR = Path(__file__).parent / "static"
 
 # -- 请求/响应模型 -----------------------------------------------------------
 class ChatRequest(BaseModel):
-    session_id: str = Field(min_length=1, max_length=128)
+    # MM-4 纵深：字符集白名单（曾仅限长度，<img onerror> 可经 source_session 透出落库）
+    session_id: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9._-]+$")
     message: str = Field(min_length=1, max_length=4000)
 
 
@@ -95,6 +97,10 @@ def _build_responder():
         return MockResponder(), RuleExtractor(), RuleOpsDecider()
 
 
+# MM-7：/chat 全局并发闸（真模型慢链路背压）
+_CHAT_SEM = threading.Semaphore(8)
+
+
 def create_app(
     db_path: Optional[str] = None,
     retrieval_config: Optional[RetrievalConfig] = None,
@@ -117,7 +123,10 @@ def create_app(
     app.state.chat = chat
 
     @app.get("/health")
-    def health() -> dict:
+    async def health() -> dict:
+        # MM-7 修复：/health 曾与 /chat 共享同步路由线程池——慢 LLM 拖满 40 线程后
+        # 探针一并饿死，被编排层杀进程等效整站不可用。改 async 直跑事件循环
+        # （轻量内存计数），保证探针永远可达。
         return {
             "status": "ok",
             "memories": store.count(),
@@ -126,7 +135,14 @@ def create_app(
 
     @app.post("/chat", response_model=ChatResponse)
     def post_chat(req: ChatRequest) -> ChatResponse:
-        result = chat.handle(req.session_id, req.message)
+        # MM-7 修复：并发闸——真模型 /chat 每请求占线程可达 90s，无上限会耗尽
+        # 线程池。非阻塞获取失败即 503（背压而非排队饿死）。
+        if not _CHAT_SEM.acquire(blocking=False):
+            raise HTTPException(status_code=503, detail="chat busy，稍后重试")
+        try:
+            result = chat.handle(req.session_id, req.message)
+        finally:
+            _CHAT_SEM.release()
         return ChatResponse(
             session_id=result.session_id,
             reply=result.reply,

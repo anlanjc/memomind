@@ -85,6 +85,9 @@
   </section>
 </main>
 <script>
+// MM-4 修复（评审 2.0）：session_id/导入字段可植存储型 XSS——六字段全部转义后再入行
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
 const $ = id => document.getElementById(id);
 
 async function health() {
@@ -127,9 +130,9 @@ async function refreshMemories() {
     const tr = document.createElement('tr');
     const vf = new Date(m.valid_from*1000).toISOString().slice(0,10);
     const vt = m.valid_to ? new Date(m.valid_to*1000).toISOString().slice(0,10) : '∞';
-    tr.innerHTML = `<td>${m.subject} <b>${m.predicate}</b> ${m.object}</td>
-      <td>${m.category}</td><td><span class="tag ${m.status}">${m.status}</span></td>
-      <td class="conf">${m.confidence.toFixed(2)}</td><td class="conf">${m.source_session}</td>
+    tr.innerHTML = `<td>${esc(m.subject)} <b>${esc(m.predicate)}</b> ${esc(m.object)}</td>
+      <td>${esc(m.category)}</td><td><span class="tag ${m.status}">${m.status}</span></td>
+      <td class="conf">${m.confidence.toFixed(2)}</td><td class="conf">${esc(m.source_session)}</td>
       <td class="conf">${vf} ~ ${vt}</td>`;
     if (m.status === 'active') {
       const td = document.createElement('td');

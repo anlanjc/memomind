@@ -155,8 +155,10 @@ class Retriever:
             texts = [f"{e.record.subject} {e.record.predicate} {e.record.object}" for e in out]
             base = [e.score for e in out]
             reranked = dict(rerank_by_similarity(query, texts, self.embedder, base))
-            for entry in out:
-                entry.score = reranked.get(id(entry), entry.score)
+            # MM-9 修复（评审 2.0）：曾用 id(entry) 查下标字典恒 no-op——白付 embedder
+            # 调用且顺序从不改变。改按候选下标取融合分。
+            for idx, entry in enumerate(out):
+                entry.score = reranked.get(idx, entry.score)
             out.sort(key=lambda e: (-e.score, e.record.id))
 
         # 5) 截断 + 刷新访问时钟（"被想起"重置遗忘时钟）
